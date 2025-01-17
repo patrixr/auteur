@@ -6,11 +6,7 @@ func NewAuteurEngine() *AuteurEngine {
 	return &AuteurEngine{}
 }
 
-func (ae *AuteurEngine) Page(name string, markdown string) {
-	// Implementation here
-}
-
-func (ae *AuteurEngine) Section(page string, title string, markdown string) {
+func (ae *AuteurEngine) Write(chunks ...string) {
 	// Implementation here
 }
 
