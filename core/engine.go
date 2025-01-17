@@ -1,4 +1,4 @@
-package auteur
+package core
 
 type AuteurEngine struct{}
 
