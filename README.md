@@ -1,0 +1,2 @@
+# auteur
+Static page generator
