@@ -7,6 +7,14 @@
 *.dll
 *.so
 *.dylib
+.zed
+out
+.DS_Store
+.env
+.out
+.data
+tmp
+*_templ.go
 
 # Test binary, built with `go test -c`
 *.test
