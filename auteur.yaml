@@ -1,5 +1,5 @@
 title: "Auteur"
-version: 0.0.14
+version: 0.0.15
 outfolder: ./dist
 root: "./docs"
 webroot: "https://auteur.tronica.io"
