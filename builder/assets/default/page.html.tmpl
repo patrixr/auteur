@@ -53,7 +53,7 @@
                 {{end}}
               {{else}}
                 <a
-                  href="{{{ .Webroot }}/{.Href}}"
+                  href="{{ .Webroot }}/{{.Href}}"
                   hx-get="{{ .Webroot }}/{{.Href}}.frag"
                   hx-target="#article-content"
                   hx-push-url="{{ .Webroot }}/{{.Href}}"
