@@ -173,7 +173,7 @@ func (r *CommentProcessor) Supports(extension string) bool {
 	return ok
 }
 
-func (r *CommentProcessor) Load(_ *Site, file string) ([]Content, error) {
+func (r *CommentProcessor) Load(_ *Auteur, file string) ([]Content, error) {
 	Logf("Reading %s", file)
 
 	content, err := os.ReadFile(file)

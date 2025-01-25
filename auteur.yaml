@@ -1,7 +1,8 @@
 title: "Auteur"
-version: 0.0.3
+version: 0.0.4
 outfolder: ./dist
 root: "./docs"
+webroot: "/auteur"
 exclude:
   - .git
   - tmp

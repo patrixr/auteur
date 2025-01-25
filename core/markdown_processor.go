@@ -40,7 +40,7 @@ func (r *MarkdownProcessor) Supports(extension string) bool {
 	return extension == ".md" || extension == ".markdown"
 }
 
-func (r *MarkdownProcessor) Load(site *Site, file string) ([]Content, error) {
+func (r *MarkdownProcessor) Load(site *Auteur, file string) ([]Content, error) {
 	Logf("Reading %s", file)
 
 	content, err := os.ReadFile(file)
@@ -98,8 +98,8 @@ func (r *MarkdownProcessor) Load(site *Site, file string) ([]Content, error) {
 	}, nil
 }
 
-func (r *MarkdownProcessor) getRelativePath(site *Site, path string) (string, error) {
-	cwd, err := filepath.Abs(site.rootdir)
+func (r *MarkdownProcessor) getRelativePath(site *Auteur, path string) (string, error) {
+	cwd, err := filepath.Abs(site.Rootdir)
 
 	if err != nil {
 		return "", fmt.Errorf("failed to get an absolute path for working directory: %w", err)

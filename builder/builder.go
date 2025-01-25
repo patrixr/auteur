@@ -5,5 +5,5 @@ import (
 )
 
 type Builder interface {
-	Render(site *Site, outfolder string) error
+	Render(site *Auteur, outfolder string) error
 }

@@ -1,11 +1,15 @@
-.PHONY: all release test templ clean tailwind build example tidy run
+.PHONY: all release test templ clean tailwind build example tidy run tag
 
 BIN_NAME := auteur
 BUILD_FOLDER := ./out
+VERSION_CMD := grep "version:" auteur.yaml | cut -d: -f2 | tr -d ' '
+
+tag: test
+	git tag -a "v`${VERSION_CMD}`" -m "Release version `${VERSION_CMD}`"
+	git push origin v`${VERSION_CMD}`
 
 release:
-	git tag -a "v`cat ./VERSION`" -m "Release version `cat ./VERSION`"
-	git push origin v`cat ./VERSION`
+	gh release create  v`${VERSION_CMD}`
 
 test:
 	ENV=test go test -json -v ./... | go run  github.com/mfridman/tparse@latest -all
@@ -33,3 +37,6 @@ air:
 
 serve:
 	npx serve ./dist
+
+version:
+	@echo `${VERSION_CMD}`

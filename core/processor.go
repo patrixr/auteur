@@ -38,7 +38,7 @@ const (
 
 type Processor interface {
 	Supports(extension string) bool
-	Load(site *Site, file string) ([]Content, error)
+	Load(site *Auteur, file string) ([]Content, error)
 }
 
 type Content interface {

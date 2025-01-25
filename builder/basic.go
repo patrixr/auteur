@@ -27,7 +27,7 @@ func NewDefaultBuilder() Builder {
 
 // Render generates the site files and folders inside the output folder
 // This is the main entry point for the builder
-func (builder DefaultBuilder) Render(site *Site, outfolder string) error {
+func (builder DefaultBuilder) Render(site *Auteur, outfolder string) error {
 	pageKey := site.Slug()
 
 	if site.IsRoot() {
@@ -66,12 +66,12 @@ func (builder DefaultBuilder) Render(site *Site, outfolder string) error {
 
 		err = templates.ExecuteTemplate(file, "page.html.tmpl", struct {
 			Fragment string
-			Site     *Site
+			Site     *Auteur
 			Title    string
 		}{
 			Fragment: html.String(),
 			Site:     site.Root(),
-			Title:    site.Title(),
+			Title:    site.Title,
 		})
 
 		// Close manually (instead of defer) to avoid stacking up open files
@@ -102,7 +102,7 @@ func (builder DefaultBuilder) Render(site *Site, outfolder string) error {
 	return nil
 }
 
-func (t DefaultBuilder) GetHTML(site *Site) (bytes.Buffer, error) {
+func (t DefaultBuilder) GetHTML(site *Auteur) (bytes.Buffer, error) {
 	buffer := bytes.Buffer{}
 
 	for _, content := range site.Content {
