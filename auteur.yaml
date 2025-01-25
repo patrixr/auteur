@@ -1,8 +1,8 @@
 title: "Auteur"
-version: 0.0.15
+version: 0.0.16
 outfolder: ./dist
 root: "./docs"
-webroot: "https://auteur.tronica.io"
+webroot: "/"
 exclude:
   - .git
   - tmp
