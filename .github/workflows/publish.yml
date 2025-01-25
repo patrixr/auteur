@@ -24,7 +24,7 @@ jobs:
       - name: Test
         run: make test
       - name: Generate docs
-        run: make run
+        run: make auteur
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:

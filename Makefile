@@ -32,6 +32,9 @@ build:
 run:
 	go run main.go
 
+auteur: run
+	echo "auteur.tronica.io" > dist/CNAME
+
 air:
 	AUTEUR_WEBROOT="/" go run github.com/air-verse/air
 
