@@ -5,6 +5,7 @@ import (
 	"embed"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,12 +13,19 @@ import (
 
 	. "github.com/patrixr/auteur/common"
 	. "github.com/patrixr/auteur/core"
+	"github.com/patrixr/q"
 )
 
 //go:embed assets/*
 var tmplFS embed.FS
 var templates = template.Must(
-	template.New("").Funcs(template.FuncMap{}).ParseFS(tmplFS, "assets/**/*.tmpl"),
+	template.New("").Funcs(template.FuncMap{
+		"Join": func(base string, elem ...string) string {
+			res, err := url.JoinPath(base, elem...)
+			q.AssertNoError(err)
+			return res
+		},
+	}).ParseFS(tmplFS, "assets/**/*.tmpl"),
 )
 
 type DefaultBuilder struct{}

@@ -25,10 +25,10 @@
             <span>Close</span>
           </span>
           <a class="title"
-            href="{{ .Webroot }}/index"
-            hx-get="{{ .Webroot }}/index.frag"
+            href="{{ Join .Webroot "index" }}"
+            hx-get="{{ Join .Webroot "index.frag" }}"
             hx-target="#article-content"
-            hx-push-url="{{ .Webroot }}/"
+            hx-push-url="{{ Join .Webroot "/" }}"
             hx-indicator="#loading-indicator"
           >
             {{.Site.Root.Title}}
@@ -39,10 +39,10 @@
               {{if .Children}}
                 {{if .HasContent }}
                   <a
-                    href="{{ .Webroot }}/{{.Href}}/index"
-                    hx-get="{{ .Webroot }}/{{.Href}}/index.frag"
+                    href="{{ Join .Webroot .Href "index" }}"
+                    hx-get="{{ Join .Webroot .Href "index.frag" }}"
                     hx-target="#article-content"
-                    hx-push-url="{{ .Webroot }}/{{.Href}}"
+                    hx-push-url="{{ Join .Webroot .Href "index" }}"
                     hx-indicator="#loading-indicator"
                   >{{.Title}}</a>
                 {{else}}
@@ -53,10 +53,10 @@
                 {{end}}
               {{else}}
                 <a
-                  href="{{ .Webroot }}/{{.Href}}"
-                  hx-get="{{ .Webroot }}/{{.Href}}.frag"
+                  href="{{ Join .Webroot .Href }}"
+                  hx-get="{{ Join .Webroot .Href }}.frag"
                   hx-target="#article-content"
-                  hx-push-url="{{ .Webroot }}/{{.Href}}"
+                  hx-push-url="{{ Join .Webroot .Href }}"
                   hx-indicator="#loading-indicator"
                 >{{.Title}}</a>
               {{end}}
