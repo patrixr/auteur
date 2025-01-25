@@ -32,10 +32,24 @@
             hx-indicator="#loading-indicator"
           >
             Auteur
-            <span class="version">0.0.7</span>
+            <span class="version">0.0.8</span>
           </a>
           
           <wa-tree>
+            
+              
+            <wa-tree-item>
+              
+                <a
+                  href="/getting-started"
+                  hx-get="/getting-started.frag"
+                  hx-target="#article-content"
+                  hx-push-url="/getting-started"
+                  hx-indicator="#loading-indicator"
+                >getting started</a>
+              
+            </wa-tree-item>
+          
             
               
             <wa-tree-item>
@@ -226,6 +240,19 @@ exclude:
 
     <div class="sidebar">
       <wa-tree>
+        
+          <wa-tree-item>
+            getting started
+            
+              <a
+                href="/getting-started"
+                hx-get="/getting-started"
+                hx-target="#main-content"
+                hx-push-url="true"
+                hx-indicator="#loading-indicator"
+              >getting started</a>
+            
+          </wa-tree-item>
         
           <wa-tree-item>
             configuration

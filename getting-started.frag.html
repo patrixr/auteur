@@ -1,0 +1,57 @@
+<h1>Getting Started</h1>
+<p>Running Auteur can be done via the go command line tool, it is as simple as running:</p>
+<pre><code class="language-sh">go run github.com/patrixr/auteur
+</code></pre>
+<h2>Markown Pages</h2>
+<p>Auteur supports markdown pages, which can be used to generate static content as you would a traditional static site generator.</p>
+<p>Simply add markdown files to the directory you are running Auteur from, and they will be included in the generated website.</p>
+<p>Example file structure:</p>
+<pre><code>docs/
+  index.md
+  about.md
+  contact.md
+</code></pre>
+<h2>Writing Comments</h2>
+<p>To register a comment as a page, a comment should contain an <code>@auteur</code> tag to indicate that it should be included in the generated website, and it should end with an <code>@end</code> tag to indicate the end of the content.</p>
+<p>Example:</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+// @auteur
+// # Welcome to Auteur
+// This is a sample page
+// @end
+func main() {
+	fmt.Println(&quot;Hello, World!&quot;)
+}
+</code></pre>
+<h2>Frontmatter</h2>
+<p>Auteur also supports frontmatter in the form of a YAML object at the beginning of a comment block.
+This allows to control:</p>
+<ul>
+<li>The title of the page</li>
+<li>The order in which the content appears</li>
+<li>The path to the page</li>
+<li>Whether the page should be ignored or not</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+// @auteur
+// ---
+// title: Welcome to Auteur
+// order: 1
+// path: /welcome
+// ---
+//
+// # Hello
+// This is a sample page
+// @end
+
+func main() {
+	fmt.Println(&quot;Hello, World!&quot;)
+}
+</code></pre>
