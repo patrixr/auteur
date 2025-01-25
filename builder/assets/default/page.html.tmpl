@@ -25,10 +25,10 @@
             <span>Close</span>
           </span>
           <a class="title"
-            href="/index"
-            hx-get="/index.frag"
+            href="{{ .Webroot }}/index"
+            hx-get="{{ .Webroot }}/index.frag"
             hx-target="#article-content"
-            hx-push-url="/"
+            hx-push-url="{{ .Webroot }}/"
             hx-indicator="#loading-indicator"
           >
             {{.Site.Root.Title}}
