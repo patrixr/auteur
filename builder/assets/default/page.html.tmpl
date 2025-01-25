@@ -39,10 +39,10 @@
               {{if .Children}}
                 {{if .HasContent }}
                   <a
-                    href="{{.Href}}/index"
-                    hx-get="{{.Href}}/index.frag"
+                    href="{{ .Webroot }}/{{.Href}}/index"
+                    hx-get="{{ .Webroot }}/{{.Href}}/index.frag"
                     hx-target="#article-content"
-                    hx-push-url="{{.Href}}"
+                    hx-push-url="{{ .Webroot }}/{{.Href}}"
                     hx-indicator="#loading-indicator"
                   >{{.Title}}</a>
                 {{else}}
@@ -53,10 +53,10 @@
                 {{end}}
               {{else}}
                 <a
-                  href="{{.Href}}"
-                  hx-get="{{.Href}}.frag"
+                  href="{{{ .Webroot }}/{.Href}}"
+                  hx-get="{{ .Webroot }}/{{.Href}}.frag"
                   hx-target="#article-content"
-                  hx-push-url="{{.Href}}"
+                  hx-push-url="{{ .Webroot }}/{{.Href}}"
                   hx-indicator="#loading-indicator"
                 >{{.Title}}</a>
               {{end}}
