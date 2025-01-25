@@ -1,5 +1,5 @@
 title: "Auteur"
-version: 0.0.6
+version: 0.0.7
 outfolder: ./dist
 root: "./docs"
 webroot: "/auteur"
@@ -9,3 +9,7 @@ exclude:
   - dist
   - node_modules
   - "*_test.go"
+links:
+  - title: "Github"
+    url: "https://github.com/patrixr/auteur"
+    icon: "link"

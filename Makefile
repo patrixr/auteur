@@ -33,7 +33,7 @@ run:
 	go run main.go
 
 air:
-	go run github.com/air-verse/air
+	AUTEUR_WEBROOT="/" go run github.com/air-verse/air
 
 serve:
 	npx serve ./dist

@@ -5,12 +5,16 @@ import (
 	"io"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"go.abhg.dev/goldmark/frontmatter"
 )
 
 var converter = goldmark.New(
-	goldmark.WithExtensions(&frontmatter.Extender{}),
+	goldmark.WithExtensions(
+		&frontmatter.Extender{},
+		extension.NewTable(),
+	),
 )
 
 func MarkdownToHTML(md []byte) (string, error) {

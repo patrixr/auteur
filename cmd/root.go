@@ -4,15 +4,12 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/patrixr/auteur/builder"
 	. "github.com/patrixr/auteur/common"
 	. "github.com/patrixr/auteur/core"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 )
 
 var rootCmd = &cobra.Command{
@@ -22,77 +19,35 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		config := AuteurConfig{
-			Title:     "Auteur",
-			Desc:      "Static site generated with Auteur",
-			Rootdir:   ".",
-			Outfolder: "out",
-			Exclude: []string{
-				"node_modules",
-				".git",
-				".gitignore",
-				".DS_Store",
-				"*_test.go",
-			},
-		}
-
-		configFiles := []string{
-			"auteur.yml",
-			"auteur.yaml",
-			"auteur.json",
-		}
-
-		for _, configFile := range configFiles {
-			if _, err := os.Stat(configFile); os.IsNotExist(err) {
-				continue
-			}
-
-			Log("Configuration detected", "file", configFile)
-			fileContent, err := os.ReadFile(configFile)
-
-			if err != nil {
-				LogError(err)
-				os.Exit(1)
-			}
-
-			if err := yaml.Unmarshal(fileContent, &config); err != nil {
-				LogError(err)
-				os.Exit(1)
-			}
-		}
-
-		Log("Configuration", "config", fmt.Sprintf("%+v", config))
-
-		folder, err := filepath.Abs(config.Rootdir)
+		auteur, err := NewAuteur()
 		if err != nil {
 			LogError(err)
 			os.Exit(1)
 		}
 
-		Log("Booting Auteur", "root", config.Rootdir)
+		Log("Booting Auteur", "root", auteur.Rootdir)
 
-		auteur := NewSiteWithConfig(config)
 		auteur.RegisterProcessor(NewCommentReader())
 		auteur.RegisterProcessor(NewMarkdownProcessor())
 
-		if err := auteur.Ingest(config.Rootdir); err != nil {
+		if err := auteur.Ingest(auteur.Rootdir); err != nil {
 			LogError(err)
 			os.Exit(1)
 		}
 
 		if auteur.HasContent() == false {
-			LogErrorf("No Auteur-compatible content found in folder %s", folder)
+			LogErrorf("No Auteur-compatible content found in folder %s", auteur.Rootdir)
 			os.Exit(1)
 		}
 
 		builder := builder.NewDefaultBuilder()
 
-		if err := builder.Render(auteur, config.Outfolder); err != nil {
+		if err := builder.Render(auteur, auteur.Outfolder); err != nil {
 			LogError(err)
 			os.Exit(1)
 		}
 
-		Log("Auteur completed successfully", "out", config.Outfolder)
+		Log("Auteur completed successfully", "out", auteur.Outfolder)
 	},
 }
 

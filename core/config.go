@@ -1,5 +1,20 @@
 package core
 
+import (
+	"os"
+	"path/filepath"
+
+	. "github.com/patrixr/auteur/common"
+	"github.com/patrixr/q"
+	"gopkg.in/yaml.v3"
+)
+
+type Link struct {
+	Title string `yaml:"title"`
+	Href  string `yaml:"url"`
+	Icon  string `yaml:"icon"`
+}
+
 type AuteurConfig struct {
 	Exclude   []string `yaml:"exclude"`
 	Title     string   `yaml:"title"`
@@ -8,6 +23,8 @@ type AuteurConfig struct {
 	Outfolder string   `yaml:"outfolder"`
 	Rootdir   string   `yaml:"root"`
 	Webroot   string   `yaml:"webroot"`
+	Links     []Link   `yaml:"links"`
+	Order     int      `yaml:"order"`
 }
 
 func (ac AuteurConfig) ExtendConfig(other *AuteurConfig) AuteurConfig {
@@ -43,5 +60,75 @@ func (ac AuteurConfig) ExtendConfig(other *AuteurConfig) AuteurConfig {
 		ac.Webroot = other.Webroot
 	}
 
+	if other.Order != ac.Order {
+		ac.Order = other.Order
+	}
+
 	return ac
+}
+
+func DetectConfig() (AuteurConfig, error) {
+	config := AuteurConfig{
+		Title:     "Auteur",
+		Desc:      "Static site generated with Auteur",
+		Rootdir:   ".",
+		Outfolder: "out",
+		Webroot:   "/",
+		Version:   "0.0.1",
+		Exclude: []string{
+			"node_modules",
+			".git",
+			".gitignore",
+			".DS_Store",
+			"*_test.go",
+		},
+	}
+
+	candidates := []string{
+		"auteur.yml",
+		"auteur.yaml",
+		"auteur.json",
+	}
+
+	for _, configFile := range candidates {
+		if _, err := os.Stat(configFile); os.IsNotExist(err) {
+			continue
+		}
+
+		Log("Configuration detected", "file", configFile)
+		fileContent, err := os.ReadFile(configFile)
+
+		if err != nil && os.IsNotExist(err) {
+			continue
+		}
+
+		if err != nil {
+			return config, err
+		}
+
+		if err := yaml.Unmarshal(fileContent, &config); err != nil {
+			return config, err
+		}
+	}
+
+	config.Webroot = q.ReadEnv("AUTEUR_WEBROOT", config.Webroot)
+	config.Outfolder = q.ReadEnv("AUTEUR_OUTFOLDER", config.Outfolder)
+	config.Rootdir = q.ReadEnv("AUTEUR_ROOTDIR", config.Rootdir)
+	config.Title = q.ReadEnv("AUTEUR_TITLE", config.Title)
+	config.Version = q.ReadEnv("AUTEUR_VERSION", config.Version)
+	config.Desc = q.ReadEnv("AUTEUR_DESC", config.Desc)
+
+	absRootdir, err := filepath.Abs(config.Rootdir)
+	if err != nil {
+		return config, err
+	}
+	config.Rootdir = absRootdir
+
+	absOutfolder, err := filepath.Abs(config.Outfolder)
+	if err != nil {
+		return config, err
+	}
+	config.Outfolder = absOutfolder
+
+	return config, nil
 }

@@ -20,6 +20,7 @@
   const setDarkMode = (isDark) => {
     setDarkModeStyles(isDark);
     themeToggle.setAttribute("checked", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   };
 
   if (isDarkModeOn()) {
@@ -27,7 +28,6 @@
     setDarkModeStyles();
   }
 
-  console.log(themeToggle);
   themeToggle.addEventListener("wa-change", () => {
     console.log("changed", themeToggle.checked);
     setDarkMode(themeToggle.checked);

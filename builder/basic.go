@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	. "github.com/patrixr/auteur/common"
@@ -68,10 +69,12 @@ func (builder DefaultBuilder) Render(site *Auteur, outfolder string) error {
 			Fragment string
 			Site     *Auteur
 			Title    string
+			Webroot  string
 		}{
 			Fragment: html.String(),
 			Site:     site.Root(),
 			Title:    site.Title,
+			Webroot:  strings.TrimRight(site.Webroot, "/"),
 		})
 
 		// Close manually (instead of defer) to avoid stacking up open files

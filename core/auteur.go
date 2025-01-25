@@ -19,17 +19,11 @@ type Auteur struct {
 	processors []Processor
 }
 
-func NewAuteur() *Auteur {
-	return NewSiteWithConfig(AuteurConfig{
-		Title:   "Auteur",
-		Desc:    "Static site generated with Auteur",
-		Exclude: []string{"node_modules", ".git", ".gitignore", ".DS_Store"},
-	})
-}
+func NewAuteur() (*Auteur, error) {
+	config, err := DetectConfig()
 
-func NewSiteWithConfig(config AuteurConfig) *Auteur {
-	if len(config.Title) == 0 {
-		config.Title = "Auteur"
+	if err != nil {
+		return nil, err
 	}
 
 	return &Auteur{
@@ -38,7 +32,7 @@ func NewSiteWithConfig(config AuteurConfig) *Auteur {
 		root:         nil,
 		Content:      []Content{},
 		processors:   []Processor{},
-	}
+	}, nil
 }
 
 func (site *Auteur) SetTitle(title string) {
@@ -112,8 +106,6 @@ func (site *Auteur) Ingest(infolder string) error {
 			return err
 		}
 
-		fmt.Println(abspath)
-
 		if IsExcluded(file.Name(), site.Exclude) {
 			common.Log("Excluding " + abspath)
 			continue
@@ -160,7 +152,7 @@ func (site *Auteur) AddContent(content Content) {
 		if len(strings.Trim(part, " \t\n")) == 0 {
 			continue
 		}
-		ref = ref.GetSubpage(part)
+		ref = ref.GetSubpage(part, content.Order())
 	}
 
 	ordered := make([]Content, len(ref.Content)+1)
@@ -188,7 +180,7 @@ func (site *Auteur) AddContent(content Content) {
 
 // GetSubpage retrieves a subpage with the given title. If the subpage does not exist, it creates a new one.
 // The title comparison is case-insensitive and ignores leading and trailing whitespace.
-func (site *Auteur) GetSubpage(title string) *Auteur {
+func (site *Auteur) GetSubpage(title string, order int) *Auteur {
 	slug := common.ToSlug(title)
 
 	for _, subpage := range site.children {
@@ -206,11 +198,33 @@ func (site *Auteur) GetSubpage(title string) *Auteur {
 	newPage := &Auteur{
 		AuteurConfig: site.ExtendConfig(&AuteurConfig{
 			Title: title,
+			Order: order,
 		}),
 		root:   root,
 		parent: site,
 	}
-	site.children = append(site.children, newPage)
+
+	newChildren := make([]*Auteur, len(site.children)+1)
+
+	for i := 0; i < len(newChildren); i++ {
+		if i == len(newChildren)-1 {
+			newChildren[i] = newPage
+			break
+		}
+
+		existing := site.children[i]
+
+		if existing.Order <= newPage.Order {
+			newChildren[i] = existing
+			continue
+		}
+
+		newChildren[i] = newPage
+		newChildren[i+1] = existing
+		i += 1
+	}
+
+	site.children = newChildren
 	return newPage
 }
 

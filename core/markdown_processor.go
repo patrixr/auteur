@@ -10,17 +10,6 @@ import (
 	"github.com/patrixr/q"
 )
 
-/**
-@auteur
----
-path: Processors
----
-
-## Markdown Processor
-
-@end
-*/
-
 type AuteurFrontmatter struct {
 	Path   string `yaml:"path"`
 	Title  string `yaml:"title"`
@@ -61,7 +50,10 @@ func (r *MarkdownProcessor) Load(site *Auteur, file string) ([]Content, error) {
 	if strings.EqualFold(filename, "readme") || strings.EqualFold(filename, "index") {
 		path = path[:len(path)-1]
 	} else {
-		path[len(path)-1] = strings.ToLower(filename)
+		filename = strings.ToLower(filename)
+		filename = strings.ReplaceAll(filename, "_", " ")
+		filename = strings.ReplaceAll(filename, "-", " ")
+		path[len(path)-1] = filename
 	}
 
 	meta, html, err := MarkdownToHTMLWithMeta([]byte(content))
