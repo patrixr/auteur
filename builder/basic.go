@@ -1,4 +1,4 @@
-package basic
+package builder
 
 import (
 	"bytes"
@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"text/template"
 
-	. "github.com/patrixr/auteur/builder"
 	. "github.com/patrixr/auteur/common"
 	. "github.com/patrixr/auteur/core"
 )
@@ -17,18 +16,18 @@ import (
 //go:embed assets/*
 var tmplFS embed.FS
 var templates = template.Must(
-	template.New("").Funcs(helpers).ParseFS(tmplFS, "assets/*.tmpl"),
+	template.New("").Funcs(template.FuncMap{}).ParseFS(tmplFS, "assets/**/*.tmpl"),
 )
 
-type BasicBuilder struct{}
+type DefaultBuilder struct{}
 
-func NewBasicBuilder() Builder {
-	return BasicBuilder{}
+func NewDefaultBuilder() Builder {
+	return DefaultBuilder{}
 }
 
 // Render generates the site files and folders inside the output folder
 // This is the main entry point for the builder
-func (theme BasicBuilder) Render(site *Site, outfolder string) error {
+func (builder DefaultBuilder) Render(site *Site, outfolder string) error {
 	pageKey := site.Slug()
 
 	if site.IsRoot() {
@@ -48,7 +47,7 @@ func (theme BasicBuilder) Render(site *Site, outfolder string) error {
 		return err
 	}
 
-	if len(site.Content) > 0 {
+	if len(site.Content) > 0 || site.IsRoot() {
 		fileName := fmt.Sprintf("%s.html", pageKey)
 		fragFileName := fmt.Sprintf("%s.frag.html", pageKey)
 
@@ -59,7 +58,7 @@ func (theme BasicBuilder) Render(site *Site, outfolder string) error {
 			return err
 		}
 
-		html, err := theme.GetHTML(site)
+		html, err := builder.GetHTML(site)
 
 		if err != nil {
 			return err
@@ -89,13 +88,13 @@ func (theme BasicBuilder) Render(site *Site, outfolder string) error {
 	}
 
 	for _, child := range site.Children() {
-		if err := theme.Render(child, outfolder); err != nil {
+		if err := builder.Render(child, outfolder); err != nil {
 			return err
 		}
 	}
 
 	if site.IsRoot() {
-		if err := theme.CopyAssets(outfolder); err != nil {
+		if err := builder.CopyAssets(outfolder); err != nil {
 			return err
 		}
 	}
@@ -103,7 +102,7 @@ func (theme BasicBuilder) Render(site *Site, outfolder string) error {
 	return nil
 }
 
-func (t BasicBuilder) GetHTML(site *Site) (bytes.Buffer, error) {
+func (t DefaultBuilder) GetHTML(site *Site) (bytes.Buffer, error) {
 	buffer := bytes.Buffer{}
 
 	for _, content := range site.Content {
@@ -124,8 +123,8 @@ func (t BasicBuilder) GetHTML(site *Site) (bytes.Buffer, error) {
 	return buffer, nil
 }
 
-func (t BasicBuilder) CopyAssets(outfolder string) error {
-	filesToCopy := []string{"assets/script.js", "assets/style.css"}
+func (t DefaultBuilder) CopyAssets(outfolder string) error {
+	filesToCopy := []string{"assets/default/script.js", "assets/default/style.css"}
 
 	for _, file := range filesToCopy {
 		src, err := tmplFS.Open(file)

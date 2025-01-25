@@ -9,6 +9,15 @@ import (
 	"github.com/patrixr/auteur/common"
 )
 
+type AuteurConfig struct {
+	Exclude   []string `yaml:"exclude"`
+	Title     string   `yaml:"title"`
+	Desc      string   `yaml:"desc"`
+	Version   string   `yaml:"version"`
+	Outfolder string   `yaml:"outfolder"`
+	Rootdir   string   `yaml:"root"`
+}
+
 type Site struct {
 	Content    []Content
 	parent     *Site
@@ -17,15 +26,35 @@ type Site struct {
 	desc       string
 	children   []*Site
 	processors []Processor
+	config     AuteurConfig
+	version    string
+	exclude    []string
+	rootdir    string
 }
 
 func NewSite() *Site {
+	return NewSiteWithConfig(AuteurConfig{
+		Title:   "Auteur",
+		Desc:    "Static site generated with Auteur",
+		Exclude: []string{"node_modules", ".git", ".gitignore", ".DS_Store"},
+	})
+}
+
+func NewSiteWithConfig(config AuteurConfig) *Site {
+	if len(config.Title) == 0 {
+		config.Title = "Auteur"
+	}
+
 	return &Site{
 		parent:     nil,
+		desc:       config.Desc,
+		title:      config.Title,
 		root:       nil,
-		title:      "Auteur",
 		Content:    []Content{},
 		processors: []Processor{},
+		version:    config.Version,
+		exclude:    config.Exclude,
+		rootdir:    config.Rootdir,
 	}
 }
 
@@ -47,6 +76,10 @@ func (site *Site) Slug() string {
 
 func (site *Site) Desc() string {
 	return site.desc
+}
+
+func (site *Site) Version() string {
+	return site.version
 }
 
 func (site *Site) Root() *Site {
@@ -96,12 +129,24 @@ func (site *Site) RegisterProcessor(processor Processor) {
 // using the registered processors to transform files into site content
 func (site *Site) Ingest(infolder string) error {
 	files, err := os.ReadDir(infolder)
+
 	if err != nil {
 		return err
 	}
 
 	for _, file := range files {
-		abspath := filepath.Join(infolder, file.Name())
+		abspath, err := filepath.Abs(filepath.Join(infolder, file.Name()))
+
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(abspath)
+
+		if IsExcluded(file.Name(), site.exclude) {
+			common.Log("Excluding " + abspath)
+			continue
+		}
 
 		// Recurse into directories
 		if file.IsDir() {
@@ -118,7 +163,7 @@ func (site *Site) Ingest(infolder string) error {
 				continue
 			}
 
-			contents, err := processor.Load(abspath)
+			contents, err := processor.Load(site, abspath)
 
 			if err != nil {
 				return err
@@ -147,7 +192,27 @@ func (site *Site) AddContent(content Content) {
 		ref = ref.GetSubpage(part)
 	}
 
-	ref.Content = append(ref.Content, content)
+	ordered := make([]Content, len(ref.Content)+1)
+
+	for i := 0; i < len(ordered); i++ {
+		if i == len(ordered)-1 {
+			ordered[i] = content
+			break
+		}
+
+		existing := ref.Content[i]
+
+		if existing.Order() <= content.Order() {
+			ordered[i] = existing
+			continue
+		}
+
+		ordered[i] = content
+		ordered[i+1] = existing
+		i += 1
+	}
+
+	ref.Content = ordered
 }
 
 // GetSubpage retrieves a subpage with the given title. If the subpage does not exist, it creates a new one.
@@ -182,7 +247,8 @@ func (site *Site) PrettyPrint() {
 	traverse = func(child *Site, level int) string {
 		var sb strings.Builder
 		indent := strings.Repeat("  ", level)
-		sb.WriteString(fmt.Sprintf("%s- %s\n", indent, child.title))
+		sb.WriteString(fmt.Sprintf("%s- %s\n", indent, child.Title()))
+		sb.WriteString(fmt.Sprintf("%s  href=%s\n", indent, child.Href()))
 		for _, child := range child.children {
 			sb.WriteString(traverse(child, level+1))
 		}
@@ -203,5 +269,22 @@ func (site *Site) HasContent() bool {
 		}
 	}
 
+	return false
+}
+
+func IsExcluded(filename string, patterns []string) bool {
+	for _, pattern := range patterns {
+
+		if pattern == filename {
+			return true
+		}
+
+		pattern = filepath.FromSlash(pattern)
+
+		matched, err := filepath.Match(pattern, filename)
+		if err == nil && matched {
+			return true
+		}
+	}
 	return false
 }

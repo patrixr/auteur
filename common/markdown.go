@@ -45,6 +45,10 @@ func ConvertMarkdownWithMeta(md []byte, w io.Writer) (Metadata, error) {
 	}
 
 	d := frontmatter.Get(ctx)
+	if d == nil {
+		return meta, nil
+	}
+
 	if err := d.Decode(&meta); err != nil {
 		return meta, err
 	}

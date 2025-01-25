@@ -67,6 +67,11 @@ NAV BAR
   .title {
     font-size: var(--wa-font-size-xl);
     width: fit-content;
+
+    .version {
+      font-size: 0.5em;
+      opacity: 0.5;
+    }
   }
 
   .close-sidebar {
@@ -75,6 +80,10 @@ NAV BAR
     gap: 0.5rem;
     line-height: 0.9rem;
     opacity: 0.75;
+  }
+
+  wa-tree {
+   text-transform: capitalize;
   }
 }
 

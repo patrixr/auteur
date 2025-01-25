@@ -4,33 +4,16 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/patrixr/auteur/builder/basic"
+	"github.com/patrixr/auteur/builder"
 	. "github.com/patrixr/auteur/common"
 	. "github.com/patrixr/auteur/core"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 )
-
-/*
----
-auteur: /
----
-
-# Auteur
-
-Auteur is a static site generator, originally designed to generate documentation for software projects.
-It traverses the file structure of a given folder and processes files to find content that can be rendered into a static site.
-
-For code documentation, Auteur looks for comments in the source code files. Here's an example:
-
-```go
-func hello() {
-world()
-}
-```
-*/
 
 var rootCmd = &cobra.Command{
 	Use:   "auteur",
@@ -39,26 +22,60 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		folder := "."
-		outfolder := "out"
-
-		if len(args) > 0 {
-			folder = args[0]
+		config := AuteurConfig{
+			Title:     "Auteur",
+			Desc:      "Static site generated with Auteur",
+			Rootdir:   ".",
+			Outfolder: "out",
+			Exclude: []string{
+				"node_modules",
+				".git",
+				".gitignore",
+				".DS_Store",
+				"*_test.go",
+			},
 		}
 
-		Log("Booting Auteur", "folder", folder)
+		configFiles := []string{
+			"auteur.yml",
+			"auteur.yaml",
+			"auteur.json",
+		}
 
-		auteur := NewSite()
-		auteur.RegisterProcessor(NewCommentReader(folder))
+		for _, configFile := range configFiles {
+			if _, err := os.Stat(configFile); os.IsNotExist(err) {
+				continue
+			}
 
-		folder, err := filepath.Abs(folder)
+			Log("Configuration detected", "file", configFile)
+			fileContent, err := os.ReadFile(configFile)
 
+			if err != nil {
+				LogError(err)
+				os.Exit(1)
+			}
+
+			if err := yaml.Unmarshal(fileContent, &config); err != nil {
+				LogError(err)
+				os.Exit(1)
+			}
+		}
+
+		Log("Configuration", "config", fmt.Sprintf("%+v", config))
+
+		folder, err := filepath.Abs(config.Rootdir)
 		if err != nil {
 			LogError(err)
 			os.Exit(1)
 		}
 
-		if err := auteur.Ingest(folder); err != nil {
+		Log("Booting Auteur", "root", config.Rootdir)
+
+		auteur := NewSiteWithConfig(config)
+		auteur.RegisterProcessor(NewCommentReader())
+		auteur.RegisterProcessor(NewMarkdownProcessor())
+
+		if err := auteur.Ingest(config.Rootdir); err != nil {
 			LogError(err)
 			os.Exit(1)
 		}
@@ -68,14 +85,14 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		builder := basic.NewBasicBuilder()
+		builder := builder.NewDefaultBuilder()
 
-		if err := builder.Render(auteur, outfolder); err != nil {
+		if err := builder.Render(auteur, config.Outfolder); err != nil {
 			LogError(err)
 			os.Exit(1)
 		}
 
-		Log("Auteur completed successfully", "out", outfolder)
+		Log("Auteur completed successfully", "out", config.Outfolder)
 	},
 }
 

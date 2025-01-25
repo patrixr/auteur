@@ -8,7 +8,7 @@ release:
 	git push origin v`cat ./VERSION`
 
 test:
-	ENV=test go test  -v ./...
+	ENV=test go test -json -v ./... | go run  github.com/mfridman/tparse@latest -all
 
 templ:
 	go run github.com/a-h/templ/cmd/templ@latest generate
@@ -32,4 +32,4 @@ air:
 	go run github.com/air-verse/air
 
 serve:
-	npx serve ./out
+	npx serve ./dist

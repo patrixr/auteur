@@ -1,0 +1,10 @@
+title: "Auteur"
+version: 0.0.2
+outfolder: ./dist
+root: "./docs"
+exclude:
+  - .git
+  - tmp
+  - dist
+  - node_modules
+  - "*_test.go"

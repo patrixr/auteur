@@ -6,7 +6,9 @@ require (
 	github.com/charmbracelet/log v0.4.0
 	github.com/golang-cz/textcase v1.2.1
 	github.com/mitchellh/mapstructure v1.5.1-0.20231216201459-8508981c8b6c
+	github.com/patrixr/q v0.11.3
 	github.com/spf13/cobra v1.8.1
+	github.com/stretchr/testify v1.9.0
 	github.com/yuin/goldmark v1.7.8
 	go.abhg.dev/goldmark/frontmatter v0.2.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -23,6 +25,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.10.0 // indirect
 	github.com/cli/safeexec v1.0.1 // indirect
 	github.com/creack/pty v1.1.23 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
@@ -38,6 +41,7 @@ require (
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect

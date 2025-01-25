@@ -9,6 +9,7 @@
 *.dylib
 .zed
 out
+dist
 .DS_Store
 .env
 .out

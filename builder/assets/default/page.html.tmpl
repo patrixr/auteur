@@ -24,8 +24,15 @@
             <wa-icon name="circle-xmark" class="close" aria-label="Close menu"></wa-icon>
             <span>Close</span>
           </span>
-          <a class="title" href="/">
+          <a class="title"
+            href="/index"
+            hx-get="/index.frag"
+            hx-target="#article-content"
+            hx-push-url="/"
+            hx-indicator="#loading-indicator"
+          >
             {{.Site.Root.Title}}
+            <span class="version">{{.Site.Root.Version}}</span>
           </a>
           {{ define "tree-item" }}
             <wa-tree-item>
@@ -55,7 +62,6 @@
               {{end}}
             </wa-tree-item>
           {{ end }}
-
           <wa-tree>
             {{range .Site.Children}}
               {{ template "tree-item" . }}
