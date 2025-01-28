@@ -29,7 +29,7 @@ docs/
 
 ## Writing Comments
 
-To register a comment as a page, a comment should contain an `@auteur` tag to indicate that it should be included in the generated website, and it should end with an `@end` tag to indicate the end of the content.
+To register a comment as a page, a comment should contain an `@auteur` tag to indicate that it should be included in the generated website.
 
 Example:
 
@@ -91,7 +91,6 @@ import "fmt"
 //
 // # Hello
 // This is a sample page
-// @end
 
 func main() {
 	fmt.Println("Hello, World!")

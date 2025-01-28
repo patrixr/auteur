@@ -4,31 +4,6 @@ import (
 	. "github.com/patrixr/auteur/common"
 )
 
-/*
- * @auteur
- * ---
- * path: processors
- * ---
- *
- * # Processors
- *
- * Auteur processors are responsible for loading and parsing files into a structured format that can be used by the Auteur engine
- *
- * ## Comments
- *
- * The "Comment" processor is responsible for parsing comments from various code languages and convert them into a structured format.
- * It supports multiple programming languages and can be extended to support more.
- *
- * ## Supported Languages
- *
- * - Go
- *   - Python
- * - JavaScript
- * - Java
- * - C++
- * @end
- */
-
 type ContentType int
 
 const (
