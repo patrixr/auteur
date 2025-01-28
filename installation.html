@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>configuration</title>
+    <title>installation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/webawesome.css" />
@@ -41,6 +41,20 @@
             <wa-tree-item>
               
                 <a
+                  href="/installation"
+                  hx-get="/installation.frag"
+                  hx-target="#article-content"
+                  hx-push-url="/installation"
+                  hx-indicator="#loading-indicator"
+                >installation</a>
+              
+            </wa-tree-item>
+          
+            
+              
+            <wa-tree-item>
+              
+                <a
                   href="/getting-started"
                   hx-get="/getting-started.frag"
                   hx-target="#article-content"
@@ -55,12 +69,12 @@
             <wa-tree-item>
               
                 <a
-                  href="/configuration"
-                  hx-get="/configuration.frag"
+                  href="/installation"
+                  hx-get="/installation.frag"
                   hx-target="#article-content"
-                  hx-push-url="/configuration"
+                  hx-push-url="/installation"
                   hx-indicator="#loading-indicator"
-                >configuration</a>
+                >installation</a>
               
             </wa-tree-item>
           
@@ -103,86 +117,24 @@
       <div class="article">
         <main class="container">
           <article id="article-content">
-            <h1>Auteur Configuration</h1>
-<p>Auteur is designed to be flexible and configurable. You can customize the behavior of the tool by providing a configuration file in YAML or JSON format.</p>
-<p>The following file names are recognized:</p>
-<ul>
-<li><code>auteur.yaml</code></li>
-<li><code>auteur.yml</code></li>
-<li><code>auteur.json</code></li>
-</ul>
-<h2>Configuration File</h2>
-<p>The configuration is specified in YAML format, typically named <code>config.yaml</code> or similar.</p>
-<h2>Basic Settings</h2>
-<table>
-<thead>
-<tr>
-<th>Setting</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>title</code></td>
-<td>string</td>
-<td>Project name displayed in documentation</td>
-<td>Auteur</td>
-</tr>
-<tr>
-<td><code>version</code></td>
-<td>string</td>
-<td>Version number of the project</td>
-<td>0.0.1</td>
-</tr>
-<tr>
-<td><code>outfolder</code></td>
-<td>string</td>
-<td>Output directory for generated files</td>
-<td>./dist</td>
-</tr>
-<tr>
-<td><code>root</code></td>
-<td>string</td>
-<td>Root directory containing source documentation</td>
-<td>.</td>
-</tr>
-<tr>
-<td><code>webroot</code></td>
-<td>string</td>
-<td>Base URL path for web serving</td>
-<td>/</td>
-</tr>
-</tbody>
-</table>
-<h2>Exclusion Rules</h2>
-<p>The <code>exclude</code> section defines patterns and directories to ignore during processing:</p>
-<pre><code class="language-yml">exclude:
-  - .git
-  - tmp
-  - dist
-  - node_modules
-  - &quot;*_test.go&quot;
+            <h1>Installation</h1>
+<h2>Homebrew</h2>
+<p>Auteur is available as a Homebrew formula. To install Auteur using Homebrew, run the following commands:</p>
+<p>First to set up the tap</p>
+<pre><code class="language-bash">brew tap tronica/tap
 </code></pre>
-<p>Files and directories matching these patterns will be skipped during document generation. The exclusion supports:</p>
-<ul>
-<li>Directory names</li>
-<li>File patterns using glob syntax</li>
-<li>Hidden files and directories</li>
-</ul>
-<h2>Example Configuration</h2>
-<pre><code class="language-yml">title: &quot;Auteur&quot;
-version: 0.0.6
-outfolder: ./dist
-root: &quot;./docs&quot;
-webroot: &quot;/auteur&quot;
-exclude:
-  - .git
-  - tmp
-  - dist
-  - node_modules
-  - &quot;*_test.go&quot;
+<p>And then to install Auteur</p>
+<pre><code class="language-bash">brew install auteur
+</code></pre>
+<p>Auteur should then be available as a command line tool.</p>
+<pre><code class="language-bash">auteur
+</code></pre>
+<h2>Using Go</h2>
+<p>To install Auteur using Go, run the following command:</p>
+<pre><code class="language-bash">go get github.com/patrixr/auteur
+</code></pre>
+<p>Alternatively you can also use <code>go run</code> to run Auteur directly from the repository:</p>
+<pre><code class="language-bash">go run github.com/patrixr/auteur
 </code></pre>
 
           </article>

@@ -41,6 +41,20 @@
             <wa-tree-item>
               
                 <a
+                  href="/installation"
+                  hx-get="/installation.frag"
+                  hx-target="#article-content"
+                  hx-push-url="/installation"
+                  hx-indicator="#loading-indicator"
+                >installation</a>
+              
+            </wa-tree-item>
+          
+            
+              
+            <wa-tree-item>
+              
+                <a
                   href="/getting-started"
                   hx-get="/getting-started.frag"
                   hx-target="#article-content"
@@ -55,12 +69,12 @@
             <wa-tree-item>
               
                 <a
-                  href="/configuration"
-                  hx-get="/configuration.frag"
+                  href="/installation"
+                  hx-get="/installation.frag"
                   hx-target="#article-content"
-                  hx-push-url="/configuration"
+                  hx-push-url="/installation"
                   hx-indicator="#loading-indicator"
-                >configuration</a>
+                >installation</a>
               
             </wa-tree-item>
           
@@ -107,6 +121,7 @@
 <p>Running Auteur can be done via the go command line tool, it is as simple as running:</p>
 <pre><code class="language-sh">go run github.com/patrixr/auteur
 </code></pre>
+<p>Auteur is also available as a <a href="/installation">Homebrew formule</a></p>
 <h2>Markown Pages</h2>
 <p>Auteur supports markdown pages, which can be used to generate static content as you would a traditional static site generator.</p>
 <p>Simply add markdown files to the directory you are running Auteur from, and they will be included in the generated website.</p>
