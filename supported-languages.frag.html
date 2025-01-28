@@ -1,0 +1,123 @@
+<h1>Supported Languages</h1>
+<p>Auteur supports documentation extraction from multiple programming languages.
+Each language has its own comment syntax, but all follow the same principle: use the <code>@auteur</code> marker inside a comment to have auteur ingest it as markdown.
+Here's how to write documentation in each supported language.</p>
+<h2>C-Style Languages (Go, JavaScript, Java, C++, etc.)</h2>
+<p>Use either line comments with <code>//</code> or block comments with <code>/* */</code>:</p>
+<pre><code class="language-c">// @auteur
+// # User Authentication
+//
+// This module handles user authentication and sessions.
+//
+// ## Usage
+//
+// Call `authenticate()` with user credentials.
+
+/* @auteur
+# User Authentication
+
+This module handles user authentication and sessions.
+
+## Usage
+
+Call `authenticate()` with user credentials.
+*/
+</code></pre>
+<h2>Python</h2>
+<p>Use either line comments with <code>#</code> or triple quotes:</p>
+<pre><code class="language-python"># @auteur
+# # User Authentication
+#
+# This module handles user authentication and sessions.
+#
+# ## Usage
+#
+# Call `authenticate()` with user credentials.
+
+&quot;&quot;&quot;
+@auteur
+# User Authentication
+
+This module handles user authentication and sessions.
+
+## Usage
+
+Call `authenticate()` with user credentials.
+&quot;&quot;&quot;
+</code></pre>
+<h2>Ruby</h2>
+<p>Use either line comments with <code>#</code> or block comments with <code>=begin/=end</code>:</p>
+<pre><code class="language-ruby"># @auteur
+# # User Authentication
+#
+# This module handles user authentication and sessions.
+
+=begin @auteur
+# User Authentication
+
+This module handles user authentication and sessions.
+
+## Usage
+
+Call `authenticate()` with user credentials.
+=end
+</code></pre>
+<h2>Lua</h2>
+<p>Use block comments with <code>--[[</code> and <code>]]</code>:</p>
+<pre><code class="language-lua">--[[
+  @auteur
+  # User Authentication
+
+  This module handles user authentication and sessions.
+
+  ## Usage
+
+  Call `authenticate()` with user credentials.
+]]
+</code></pre>
+<h2>HTML/XML</h2>
+<p>Use HTML-style comments:</p>
+<pre><code class="language-html">&lt;!-- @auteur
+# Component Documentation
+
+This component handles user input.
+
+## Props
+
+- `value`: Current input value
+- `onChange`: Change handler
+--&gt;
+</code></pre>
+<h2>SQL</h2>
+<p>Use line comments with <code>--</code>:</p>
+<pre><code class="language-sql">-- @auteur
+-- # User Table Schema
+--
+-- Defines the structure for storing user data.
+--
+-- ## Columns
+--
+-- - `id`: Primary key
+-- - `username`: Unique identifier
+</code></pre>
+<h2>Common Features</h2>
+<p>For all languages:</p>
+<ol>
+<li>Start with <code>@auteur</code> to mark documentation blocks</li>
+<li>Use standard Markdown syntax after the marker</li>
+<li>Maintain consistent indentation</li>
+<li>Add blank lines between sections using comment markers</li>
+<li>Headers, lists, code blocks, and other Markdown features are supported</li>
+</ol>
+<h2>Markdown Support</h2>
+<p>You can use:</p>
+<ul>
+<li>Headers (<code>#</code>, <code>##</code>, etc.)</li>
+<li>Lists (ordered and unordered)</li>
+<li>Code blocks (fenced or indented)</li>
+<li>Links and images</li>
+<li>Tables</li>
+<li>Blockquotes</li>
+<li>All other standard Markdown syntax</li>
+</ul>
+<p>Remember to maintain proper comment markers for your chosen language while writing Markdown content.</p>

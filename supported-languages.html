@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>getting started</title>
+    <title>supported languages</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/webawesome.css" />
@@ -103,76 +103,129 @@
       <div class="article">
         <main class="container">
           <article id="article-content">
-            <h1>Getting Started</h1>
-<p>Running Auteur can be done via the go command line tool, it is as simple as running:</p>
-<pre><code class="language-sh">go run github.com/patrixr/auteur
-</code></pre>
-<h2>Markown Pages</h2>
-<p>Auteur supports markdown pages, which can be used to generate static content as you would a traditional static site generator.</p>
-<p>Simply add markdown files to the directory you are running Auteur from, and they will be included in the generated website.</p>
-<p>Example file structure:</p>
-<pre><code>docs/
-  index.md
-  about.md
-  contact.md
-</code></pre>
-<h2>Writing Comments</h2>
-<p>To register a comment as a page, a comment should contain an <code>@auteur</code> tag to indicate that it should be included in the generated website, and it should end with an <code>@end</code> tag to indicate the end of the content.</p>
-<p>Example:</p>
-<pre><code class="language-go">package main
-
-import &quot;fmt&quot;
-
-// @auteur
-// # Welcome to Auteur
-// This is a sample page
-func main() {
-	fmt.Println(&quot;Hello, World!&quot;)
-}
-</code></pre>
-<h2>Specifying the path</h2>
-<p>To specify the path of the generated page directly within the <code>@auteur</code> annotation, you can add a string argument to the annotation.
-This string argument should represent the desired path for the page.</p>
-<p>Example:</p>
-<pre><code class="language-go">package main
-
-import &quot;fmt&quot;
-
-// @auteur(&quot;/my-subpage/my-subsubpage&quot;)
-// # Custom Path Page
-func main() {
- fmt.Println(&quot;Hello, World!&quot;)
-}
-</code></pre>
-<h2>Frontmatter</h2>
-<p>Auteur also supports frontmatter in the form of a YAML object at the beginning of a comment block.
-This allows to control:</p>
-<ul>
-<li>The title of the page</li>
-<li>The order in which the content appears</li>
-<li>The path to the page</li>
-<li>Whether the page should be ignored or not</li>
-</ul>
-<p>Example:</p>
-<pre><code class="language-go">package main
-
-import &quot;fmt&quot;
-
-// @auteur
-// ---
-// title: Welcome to Auteur
-// order: 1
-// path: /welcome
-// ---
+            <h1>Supported Languages</h1>
+<p>Auteur supports documentation extraction from multiple programming languages.
+Each language has its own comment syntax, but all follow the same principle: use the <code>@auteur</code> marker inside a comment to have auteur ingest it as markdown.
+Here's how to write documentation in each supported language.</p>
+<h2>C-Style Languages (Go, JavaScript, Java, C++, etc.)</h2>
+<p>Use either line comments with <code>//</code> or block comments with <code>/* */</code>:</p>
+<pre><code class="language-c">// @auteur
+// # User Authentication
 //
-// # Hello
-// This is a sample page
-// @end
+// This module handles user authentication and sessions.
+//
+// ## Usage
+//
+// Call `authenticate()` with user credentials.
 
-func main() {
-	fmt.Println(&quot;Hello, World!&quot;)
-}
+/* @auteur
+# User Authentication
+
+This module handles user authentication and sessions.
+
+## Usage
+
+Call `authenticate()` with user credentials.
+*/
 </code></pre>
+<h2>Python</h2>
+<p>Use either line comments with <code>#</code> or triple quotes:</p>
+<pre><code class="language-python"># @auteur
+# # User Authentication
+#
+# This module handles user authentication and sessions.
+#
+# ## Usage
+#
+# Call `authenticate()` with user credentials.
+
+&quot;&quot;&quot;
+@auteur
+# User Authentication
+
+This module handles user authentication and sessions.
+
+## Usage
+
+Call `authenticate()` with user credentials.
+&quot;&quot;&quot;
+</code></pre>
+<h2>Ruby</h2>
+<p>Use either line comments with <code>#</code> or block comments with <code>=begin/=end</code>:</p>
+<pre><code class="language-ruby"># @auteur
+# # User Authentication
+#
+# This module handles user authentication and sessions.
+
+=begin @auteur
+# User Authentication
+
+This module handles user authentication and sessions.
+
+## Usage
+
+Call `authenticate()` with user credentials.
+=end
+</code></pre>
+<h2>Lua</h2>
+<p>Use block comments with <code>--[[</code> and <code>]]</code>:</p>
+<pre><code class="language-lua">--[[
+  @auteur
+  # User Authentication
+
+  This module handles user authentication and sessions.
+
+  ## Usage
+
+  Call `authenticate()` with user credentials.
+]]
+</code></pre>
+<h2>HTML/XML</h2>
+<p>Use HTML-style comments:</p>
+<pre><code class="language-html">&lt;!-- @auteur
+# Component Documentation
+
+This component handles user input.
+
+## Props
+
+- `value`: Current input value
+- `onChange`: Change handler
+--&gt;
+</code></pre>
+<h2>SQL</h2>
+<p>Use line comments with <code>--</code>:</p>
+<pre><code class="language-sql">-- @auteur
+-- # User Table Schema
+--
+-- Defines the structure for storing user data.
+--
+-- ## Columns
+--
+-- - `id`: Primary key
+-- - `username`: Unique identifier
+</code></pre>
+<h2>Common Features</h2>
+<p>For all languages:</p>
+<ol>
+<li>Start with <code>@auteur</code> to mark documentation blocks</li>
+<li>Use standard Markdown syntax after the marker</li>
+<li>Maintain consistent indentation</li>
+<li>Add blank lines between sections using comment markers</li>
+<li>Headers, lists, code blocks, and other Markdown features are supported</li>
+</ol>
+<h2>Markdown Support</h2>
+<p>You can use:</p>
+<ul>
+<li>Headers (<code>#</code>, <code>##</code>, etc.)</li>
+<li>Lists (ordered and unordered)</li>
+<li>Code blocks (fenced or indented)</li>
+<li>Links and images</li>
+<li>Tables</li>
+<li>Blockquotes</li>
+<li>All other standard Markdown syntax</li>
+</ul>
+<p>Remember to maintain proper comment markers for your chosen language while writing Markdown content.</p>
 
           </article>
         </main></div>
