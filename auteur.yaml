@@ -1,5 +1,5 @@
 title: "Auteur"
-version: 0.0.18
+version: 0.0.19
 outfolder: ./dist
 root: "./docs"
 webroot: "/"
