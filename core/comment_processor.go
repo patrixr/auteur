@@ -185,16 +185,11 @@ func (r *CommentProcessor) LoadFromString(content string, style CommentStyle) ([
 	comments := findCommentsInText(content, style)
 
 	for _, comment := range comments {
-		fmt.Println(comment)
 		include, args, trimmed := extractAuteurMetaFromComment(comment)
 
 		if !include {
 			continue
 		}
-
-		fmt.Println(include)
-		fmt.Println(args)
-		fmt.Println(trimmed)
 
 		path := []string{}
 

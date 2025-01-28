@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -211,7 +210,6 @@ func TestAuteurCommentParsing(t *testing.T) {
 			got, err := reader.LoadFromString(tt.input, tt.style)
 			assert.NoError(t, err)
 			assert.NotEmpty(t, got)
-			fmt.Println(got)
 			assert.Equal(t, tt.expected, got[0].Data(), "Test case: %s\nInput:\n%s", tt.name, tt.input)
 		})
 	}
