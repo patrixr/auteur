@@ -10,11 +10,7 @@ import (
 	"github.com/patrixr/q"
 )
 
-var (
-	// Use Sprintf to avoid being detected by auteur itself
-	BEGIN_TAG = fmt.Sprintf("@%s", "auteur")
-	END_TAG   = fmt.Sprintf("@%s", "end")
-)
+const AUTEUR_TAG = "@auteur"
 
 type CommentStyle struct {
 	BlockStart  string
@@ -27,21 +23,21 @@ var (
 	C_STYLE = CommentStyle{
 		BlockStart:  `\/\*`,
 		BlockEnd:    `\*\/`,
-		LineComment: []string{`//`, `*`},
+		LineComment: []string{`[/]{2,}`},
 		LineBegin:   `\*`,
 	}
 
 	PYTHON_STYLE = CommentStyle{
 		BlockStart:  `"""`,
 		BlockEnd:    `"""`,
-		LineComment: []string{`#`},
+		LineComment: []string{`#+`},
 		LineBegin:   ``,
 	}
 
 	RUBY_STYLE = CommentStyle{
 		BlockStart:  `=begin`,
 		BlockEnd:    `=end`,
-		LineComment: []string{`#`},
+		LineComment: []string{`#+`},
 		LineBegin:   ``,
 	}
 
@@ -62,49 +58,49 @@ var (
 	SCSS_STYLE = CommentStyle{
 		BlockStart:  `\/\*`,
 		BlockEnd:    `\*\/`,
-		LineComment: []string{`//`},
+		LineComment: []string{`/{2,}`},
 		LineBegin:   ``,
 	}
 
 	HASH_STYLE = CommentStyle{
 		BlockStart:  ``,
 		BlockEnd:    ``,
-		LineComment: []string{`#`},
+		LineComment: []string{`#{1,}`},
 		LineBegin:   ``,
 	}
 
 	LUA_STYLE = CommentStyle{
 		BlockStart:  `--\[\[`,
 		BlockEnd:    `\]\]`,
-		LineComment: []string{`--`},
+		LineComment: []string{},
 		LineBegin:   ``,
 	}
 
 	HASKELL_STYLE = CommentStyle{
 		BlockStart:  `{-`,
 		BlockEnd:    `-}`,
-		LineComment: []string{`--`},
+		LineComment: []string{`-{2,}`},
 		LineBegin:   ``,
 	}
 
 	SQL_STYLE = CommentStyle{
 		BlockStart:  `\/\*`,
 		BlockEnd:    `\*\/`,
-		LineComment: []string{`--`},
+		LineComment: []string{`-{2,}`},
 		LineBegin:   ``,
 	}
 
 	PERL_STYLE = CommentStyle{
 		BlockStart:  `=pod`,
 		BlockEnd:    `=cut`,
-		LineComment: []string{`#`},
+		LineComment: []string{`#+`},
 		LineBegin:   ``,
 	}
 
 	MATLAB_STYLE = CommentStyle{
 		BlockStart:  `%{`,
 		BlockEnd:    `%}`,
-		LineComment: []string{`%`},
+		LineComment: []string{`%+`},
 		LineBegin:   ``,
 	}
 
@@ -118,7 +114,7 @@ var (
 	PHP_STYLE = CommentStyle{
 		BlockStart:  `\/\*`,
 		BlockEnd:    `\*\/`,
-		LineComment: []string{`//`, `#`, `*`},
+		LineComment: []string{`/{2,}`},
 		LineBegin:   `\*`,
 	}
 )
@@ -186,20 +182,27 @@ func (r *CommentProcessor) Load(_ *Auteur, file string) ([]Content, error) {
 
 func (r *CommentProcessor) LoadFromString(content string, style CommentStyle) ([]Content, error) {
 	out := []Content{}
+	comments := findCommentsInText(content, style)
 
-	// find all beginning to end blocks
-	pattern := fmt.Sprintf(`(?m)%s\s*(.*?)%s`, BEGIN_TAG, END_TAG)
-	regex := regexp.MustCompile(`(?s)` + pattern)
-	matches := regex.FindAllStringSubmatch(string(content), -1)
+	for _, comment := range comments {
+		fmt.Println(comment)
+		include, args, trimmed := extractAuteurMetaFromComment(comment)
 
-	for _, match := range matches {
-		if len(match) != 2 {
+		if !include {
 			continue
 		}
 
-		data := trimCommentArtifacts(match[1], style)
+		fmt.Println(include)
+		fmt.Println(args)
+		fmt.Println(trimmed)
 
-		meta, html, err := MarkdownToHTMLWithMeta([]byte(data))
+		path := []string{}
+
+		if len(args) > 0 {
+			path = strings.Split(args[0], "/")
+		}
+
+		meta, html, err := MarkdownToHTMLWithMeta([]byte(trimmed))
 		if err != nil {
 			return out, err
 		}
@@ -213,8 +216,18 @@ func (r *CommentProcessor) LoadFromString(content string, style CommentStyle) ([
 			continue
 		}
 
-		path := strings.Split(fm.Path, "/")
+		if fm.Path != "" && len(path) == 0 {
+			path = strings.Split(fm.Path, "/")
+		}
 
+		fmt.Println(&ContentData{
+			metadata: meta,
+			data:     html,
+			path:     path,
+			kind:     HTML,
+			title:    fm.Title,
+			order:    fm.Order,
+		})
 		out = append(out, &ContentData{
 			metadata: meta,
 			data:     html,
@@ -241,46 +254,58 @@ func getCommentStyle(filename string) CommentStyle {
 	return CommentStyle{BlockStart: `\/\*`, BlockEnd: `\*\/`, LineComment: []string{`//`, `\*`}, LineBegin: `\*`}
 }
 
-func trimCommentArtifacts(content string, style CommentStyle) string {
-	lines := strings.Split(content, "\n")
+// Given a text, tries to find if there is an @auteur(...)
+// tag inside of it. If yes, returns true, alongside the arguments of the tag
+// and the text trimmed of said tag
+func extractAuteurMetaFromComment(text string) (present bool, args []string, trimmed string) {
+	argsPattern := `\s*((?:("[^"\n]*")\s*,\s*)*(?:("[^"\n]*")))?\s*`
+	auteurPattern := fmt.Sprintf(`%s(?:[\s\n]|$)|%s\(%s\)`, AUTEUR_TAG, AUTEUR_TAG, argsPattern)
+	auteurRexp := regexp.MustCompile(auteurPattern)
+	auteurMatches := auteurRexp.FindAllStringSubmatch(text, -1)
 
-	// Build regex pattern for comment prefixes
-	var prefixesToIgnore []string
+	if len(auteurMatches) == 0 {
+		trimmed = text
+		return
+	}
+
+	present = true
+	trimmed = q.TrimIndent(auteurRexp.ReplaceAllString(text, ""))
+
+	// Check to see if we've found some arguments
+	if len(auteurMatches[0]) > 2 {
+		args = auteurMatches[0][2:]
+
+		for i, arg := range args {
+			args[i] = strings.Trim(arg, `"`)
+		}
+	}
+
+	return
+}
+
+// Given a code file, finds all the comment blocks present inside ot it
+// Comment symbols (//) are trimmed before returning the text content
+func findCommentsInText(text string, style CommentStyle) []string {
+	comments := []string{}
+
+	// Block comments
+	pattern := fmt.Sprintf(`(?s)%s(.*?)%s`, style.BlockStart, style.BlockEnd)
+	matches := regexp.MustCompile(pattern).FindAllStringSubmatch(text, -1)
+
+	for _, match := range matches {
+		comments = append(comments, match[1])
+	}
+
+	// Line comments
 	for _, comment := range style.LineComment {
-		prefixesToIgnore = append(prefixesToIgnore, regexp.QuoteMeta(comment))
-	}
-	pattern := fmt.Sprintf(`^(?:%s)`, strings.Join(prefixesToIgnore, "|"))
-	commentRegex := regexp.MustCompile(pattern)
-
-	for _, line := range lines {
-		trimmed := strings.TrimSpace(line)
-
-		if trimmed == "" {
-			continue
-		}
-
-		if !commentRegex.MatchString(trimmed) {
-			// Lines are not all starting with the same comment prefix
-			// we can't clean the prefixes
-			return content
+		pattern = fmt.Sprintf(`(?m)(^\s*%s[^\n]*\n)+`, comment)
+		blocks := regexp.MustCompile(pattern).FindAllString(text, -1)
+		for _, block := range blocks {
+			trimPattern := fmt.Sprintf(`(?m)^\s*%s`, comment)
+			trimmed := regexp.MustCompile(trimPattern).ReplaceAllString(block, "")
+			comments = append(comments, trimmed)
 		}
 	}
 
-	// Second pass: clean the prefixes since we know they're consistent
-	cleaned := make([]string, len(lines))
-	for i, line := range lines {
-		trimmed := strings.TrimSpace(line)
-
-		if len(trimmed) == 0 {
-			cleaned[i] = trimmed
-			continue
-		}
-
-		cleanLine := commentRegex.ReplaceAllString(trimmed, "")
-		cleaned[i] = cleanLine
-	}
-
-	return q.TrimIndent(
-		strings.Join(cleaned, "\n"),
-	)
+	return comments
 }

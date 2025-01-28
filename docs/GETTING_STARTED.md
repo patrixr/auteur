@@ -39,9 +39,27 @@ import "fmt"
 // @auteur
 // # Welcome to Auteur
 // This is a sample page
-// @end
 func main() {
 	fmt.Println("Hello, World!")
+}
+```
+
+## Specifying the path
+
+To specify the path of the generated page directly within the `@auteur` annotation, you can add a string argument to the annotation.
+This string argument should represent the desired path for the page.
+
+Example:
+
+```go
+package main
+
+import "fmt"
+
+// @auteur("/my-subpage/my-subsubpage")
+// # Custom Path Page
+func main() {
+ fmt.Println("Hello, World!")
 }
 ```
 

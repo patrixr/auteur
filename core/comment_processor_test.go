@@ -1,13 +1,91 @@
 package core
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/patrixr/q"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCommentExtraction(t *testing.T) {
+func TestFindCommentsInText(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		style    CommentStyle
+		expected []string
+	}{
+		{
+			name: "C-style block comments",
+			input: `
+                /* First comment */
+                code here
+                /* Multi
+                   line
+                   comment */
+            `,
+			style: C_STYLE,
+			expected: []string{
+				"First comment",
+				"Multi\n                   line\n                   comment",
+			},
+		},
+		{
+			name: "C-style line comments",
+			input: `
+// First comment
+code here
+//   Second comment
+    // Indented comment
+//Multiple
+//Consecutive
+//Comments
+		          `,
+			style: C_STYLE,
+			expected: []string{
+				"First comment",
+				"    Second comment\n" +
+					" Indented comment\n" +
+					"Multiple\n" +
+					"Consecutive\n" +
+					"Comments\n",
+			},
+		},
+		{
+			name: "Lua-style comments",
+			input: `
+		              --[[ Block comment ]]
+		          `,
+			style: LUA_STYLE,
+			expected: []string{
+				"Block comment",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := findCommentsInText(tt.input, tt.style)
+
+			if len(got) != len(tt.expected) {
+				t.Errorf("findCommentsInText() got %d comments, expected %d comments",
+					len(got), len(tt.expected))
+				return
+			}
+
+			for i := range got {
+				got[i] = strings.TrimSpace(got[i])
+				if got[i] != strings.TrimSpace(tt.expected[i]) {
+					t.Errorf("findCommentsInText() got[%d] = %q, expected %q",
+						i, got[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestAuteurCommentParsing(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -20,7 +98,6 @@ func TestCommentExtraction(t *testing.T) {
 				// @auteur
 				// Hello
 				// World
-				// @end
 			`),
 			style:    C_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -29,21 +106,8 @@ func TestCommentExtraction(t *testing.T) {
 			name: "Slash star comment",
 			input: q.Paragraph(`
 				/* @auteur
-				// Hello
-				// World
-				@end */
-			`),
-			style:    C_STYLE,
-			expected: "<p>Hello\nWorld</p>\n",
-		},
-		{
-			name: "Slash star comment (with star prefix)",
-			input: q.Paragraph(`
-				/* @auteur
-				 * Hello
-				 * World
-				 * @end
-				 */
+				Hello
+				World  */
 			`),
 			style:    C_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -54,7 +118,6 @@ func TestCommentExtraction(t *testing.T) {
 				# @auteur
 				# Hello
 				# World
-				# @end
 			`),
 			style:    PYTHON_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -65,7 +128,6 @@ func TestCommentExtraction(t *testing.T) {
 				# @auteur
 				# Hello
 				# World
-				# @end
 			`),
 			style:    RUBY_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -76,7 +138,6 @@ func TestCommentExtraction(t *testing.T) {
 				=begin @auteur
 				Hello
 				World
-				@end
 				=end
 			`),
 			style:    RUBY_STYLE,
@@ -85,10 +146,11 @@ func TestCommentExtraction(t *testing.T) {
 		{
 			name: "Lua style comment",
 			input: q.Paragraph(`
-				-- @auteur
-				-- Hello
-				-- World
-				-- @end
+				--[[
+					@auteur
+					Hello
+					World
+				]]
 			`),
 			style:    LUA_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -103,7 +165,6 @@ func TestCommentExtraction(t *testing.T) {
 				# Heading 2
 				# ---------
 				# World
-				# @end
 			`),
 			style:    PYTHON_STYLE,
 			expected: "<h1>Heading 1</h1>\n<p>Hello</p>\n<h2>Heading 2</h2>\n<p>World</p>\n",
@@ -115,7 +176,6 @@ func TestCommentExtraction(t *testing.T) {
 				@auteur
 				Hello
 				World
-				@end
 				"""
 			`),
 			style:    PYTHON_STYLE,
@@ -127,7 +187,7 @@ func TestCommentExtraction(t *testing.T) {
 				<!-- @auteur
 				Hello
 				World
-				@end -->
+			  -->
 			`),
 			style:    HTML_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -138,7 +198,6 @@ func TestCommentExtraction(t *testing.T) {
 				-- @auteur
 				-- Hello
 				-- World
-				-- @end
 			`),
 			style:    SQL_STYLE,
 			expected: "<p>Hello\nWorld</p>\n",
@@ -152,6 +211,7 @@ func TestCommentExtraction(t *testing.T) {
 			got, err := reader.LoadFromString(tt.input, tt.style)
 			assert.NoError(t, err)
 			assert.NotEmpty(t, got)
+			fmt.Println(got)
 			assert.Equal(t, tt.expected, got[0].Data(), "Test case: %s\nInput:\n%s", tt.name, tt.input)
 		})
 	}

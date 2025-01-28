@@ -5,7 +5,6 @@ import (
 	"embed"
 	"fmt"
 	"io"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,19 +12,12 @@ import (
 
 	. "github.com/patrixr/auteur/common"
 	. "github.com/patrixr/auteur/core"
-	"github.com/patrixr/q"
 )
 
 //go:embed assets/*
 var tmplFS embed.FS
 var templates = template.Must(
-	template.New("").Funcs(template.FuncMap{
-		"Join": func(base string, elem ...string) string {
-			res, err := url.JoinPath(base, elem...)
-			q.AssertNoError(err)
-			return res
-		},
-	}).ParseFS(tmplFS, "assets/**/*.tmpl"),
+	template.New("").Funcs(templateFuncs).ParseFS(tmplFS, "assets/**/*.tmpl"),
 )
 
 type DefaultBuilder struct{}
@@ -74,15 +66,17 @@ func (builder DefaultBuilder) Render(site *Auteur, outfolder string) error {
 		}
 
 		err = templates.ExecuteTemplate(file, "page.html.tmpl", struct {
-			Fragment string
-			Site     *Auteur
-			Title    string
-			Webroot  string
+			Fragment   string
+			Site       *Auteur
+			Title      string
+			Webroot    string
+			Distfolder string
 		}{
-			Fragment: html.String(),
-			Site:     site.Root(),
-			Title:    site.Title,
-			Webroot:  strings.TrimRight(site.Webroot, "/"),
+			Fragment:   html.String(),
+			Site:       site.Root(),
+			Title:      site.Title,
+			Webroot:    strings.TrimRight(site.Webroot, "/"),
+			Distfolder: outfolder,
 		})
 
 		// Close manually (instead of defer) to avoid stacking up open files

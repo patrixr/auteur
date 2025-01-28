@@ -22,7 +22,7 @@ Auteur will look for Markdown files and code comments in the current directory a
 
 ## Writing Comments
 
-To register a comment as a page, a comment should contain an `@auteur` tag to indicate that it should be included in the generated website, and it should end with an `@end` tag to indicate the end of the content.
+To register a comment as a page, a comment should contain an `@auteur` tag to indicate that it should be included in the generated website.
 
 Example:
 
@@ -34,9 +34,27 @@ import "fmt"
 // @auteur
 // # Welcome to Auteur
 // This is a sample page
-// @end
 func main() {
 	fmt.Println("Hello, World!")
+}
+```
+
+## Specifying the path
+
+To specify the path of the generated page directly within the `@auteur` annotation, you can add a string argument to the annotation.
+This string argument should represent the desired path for the page.
+
+Example:
+
+```go
+package main
+
+import "fmt"
+
+// @auteur("/my-subpage/my-subsubpage")
+// # Custom Path Page
+func main() {
+ fmt.Println("Hello, World!")
 }
 ```
 
@@ -66,7 +84,6 @@ import "fmt"
 //
 // # Hello
 // This is a sample page
-// @end
 
 func main() {
 	fmt.Println("Hello, World!")
