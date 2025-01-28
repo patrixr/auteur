@@ -10,6 +10,8 @@ Running Auteur can be done via the go command line tool, it is as simple as runn
 go run github.com/patrixr/auteur
 ```
 
+Auteur is also available as a [Homebrew formule](/installation)
+
 ## Markown Pages
 
 Auteur supports markdown pages, which can be used to generate static content as you would a traditional static site generator.

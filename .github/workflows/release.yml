@@ -1,4 +1,4 @@
-name: Test and publish
+name: release
 
 on:
   release:
@@ -23,13 +23,6 @@ jobs:
         run: make build
       - name: Test
         run: make test
-      - name: Generate docs
-        run: make auteur
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GH_PERSONAL_TOKEN }}
-          publish_dir: ./dist
   release:
     needs: build
     name: Release Go Binary
