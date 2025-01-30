@@ -1,12 +1,19 @@
 ---
-order: 1
+order: 0
 ---
 
 # Getting Started
 
-Running Auteur can be done via the go command line tool, it is as simple as running:
+1. Install Auteur using Homebrew or Golang. Instructions are available in the [Installation](/installation) section.
+2. Naviage to a directory containing markdown files or code comments
+3. Run Auteur via a simple command line:
+
+**Important**: Comments should follow the [Auteur syntax](/supported-languages) to be included in the generated website.
 
 ```sh
+# Homebrew
+auteur
+# or for Go
 go run github.com/patrixr/auteur
 ```
 

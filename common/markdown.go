@@ -8,11 +8,16 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"go.abhg.dev/goldmark/frontmatter"
+	"go.abhg.dev/goldmark/mermaid"
 )
 
+// Project-wide markdown converter
 var converter = goldmark.New(
 	goldmark.WithExtensions(
 		&frontmatter.Extender{},
+		&mermaid.Extender{
+			RenderMode: mermaid.RenderModeClient,
+		},
 		extension.NewTable(),
 	),
 )

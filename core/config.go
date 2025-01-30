@@ -27,6 +27,8 @@ type AuteurConfig struct {
 	Order     int      `yaml:"order"`
 }
 
+// ExtendConfig returns a new AuteurConfig with the values of the other config
+// merged into the current one. The other config takes precedence over the current one.
 func (ac AuteurConfig) ExtendConfig(other *AuteurConfig) AuteurConfig {
 	if other == nil {
 		return ac
@@ -67,6 +69,9 @@ func (ac AuteurConfig) ExtendConfig(other *AuteurConfig) AuteurConfig {
 	return ac
 }
 
+// DetectConfig reads the configuration file from the current directory and returns
+// an AuteurConfig struct with the values from the configuration file.
+// Environment variables can be used to override the values in the configuration file.
 func DetectConfig() (AuteurConfig, error) {
 	config := AuteurConfig{
 		Title:     "Auteur",

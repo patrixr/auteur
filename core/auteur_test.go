@@ -45,18 +45,6 @@ func TestSite(t *testing.T) {
 		assert.Empty(t, site.processors)
 	})
 
-	t.Run("Basic Setters and Getters", func(t *testing.T) {
-		site, err := NewAuteur()
-		assert.NoError(t, err)
-
-		site.SetTitle("Test Title")
-		assert.Equal(t, "Test Title", site.Title)
-		assert.Equal(t, "test-title", site.Slug())
-
-		site.SetDesc("Test Description")
-		assert.Equal(t, "Test Description", site.Desc)
-	})
-
 	t.Run("Root and Href detection", func(t *testing.T) {
 		root, err := NewAuteur()
 		assert.NoError(t, err)

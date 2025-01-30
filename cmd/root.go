@@ -9,6 +9,7 @@ import (
 	"github.com/patrixr/auteur/builder"
 	. "github.com/patrixr/auteur/common"
 	. "github.com/patrixr/auteur/core"
+	. "github.com/patrixr/auteur/processors"
 	"github.com/spf13/cobra"
 )
 

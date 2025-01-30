@@ -11,6 +11,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/yuin/goldmark v1.7.8
 	go.abhg.dev/goldmark/frontmatter v0.2.0
+	go.abhg.dev/goldmark/mermaid v0.5.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

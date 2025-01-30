@@ -1,9 +1,12 @@
-package core
+package processors
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
+	. "github.com/patrixr/auteur/core"
 	"github.com/patrixr/q"
 	"github.com/stretchr/testify/assert"
 )
@@ -88,7 +91,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
-		style    CommentStyle
+		ext      string
 		expected string
 	}{
 		{
@@ -98,7 +101,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				// Hello
 				// World
 			`),
-			style:    C_STYLE,
+			ext:      ".c",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -108,7 +111,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				Hello
 				World  */
 			`),
-			style:    C_STYLE,
+			ext:      ".c",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -118,7 +121,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				# Hello
 				# World
 			`),
-			style:    PYTHON_STYLE,
+			ext:      ".py",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -128,7 +131,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				# Hello
 				# World
 			`),
-			style:    RUBY_STYLE,
+			ext:      ".rb",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -139,7 +142,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				World
 				=end
 			`),
-			style:    RUBY_STYLE,
+			ext:      ".rb",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -151,7 +154,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 					World
 				]]
 			`),
-			style:    LUA_STYLE,
+			ext:      ".lua",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -165,7 +168,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				# ---------
 				# World
 			`),
-			style:    PYTHON_STYLE,
+			ext:      ".py",
 			expected: "<h1>Heading 1</h1>\n<p>Hello</p>\n<h2>Heading 2</h2>\n<p>World</p>\n",
 		},
 		{
@@ -177,7 +180,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				World
 				"""
 			`),
-			style:    PYTHON_STYLE,
+			ext:      ".py",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -188,7 +191,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				World
 			  -->
 			`),
-			style:    HTML_STYLE,
+			ext:      ".html",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 		{
@@ -198,7 +201,7 @@ func TestAuteurCommentParsing(t *testing.T) {
 				-- Hello
 				-- World
 			`),
-			style:    SQL_STYLE,
+			ext:      ".sql",
 			expected: "<p>Hello\nWorld</p>\n",
 		},
 	}
@@ -207,7 +210,13 @@ func TestAuteurCommentParsing(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := reader.LoadFromString(tt.input, tt.style)
+			tmpdir := t.TempDir()
+			tempfile := filepath.Join(tmpdir, tt.name+tt.ext)
+			os.WriteFile(tempfile, []byte(tt.input), 0644)
+			auteur, err := NewAuteur()
+
+			assert.NoError(t, err)
+			got, err := reader.Load(auteur, tempfile)
 			assert.NoError(t, err)
 			assert.NotEmpty(t, got)
 			assert.Equal(t, tt.expected, got[0].Data(), "Test case: %s\nInput:\n%s", tt.name, tt.input)

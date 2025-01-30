@@ -36,6 +36,7 @@ auteur: run
 	echo "auteur.tronica.io" > dist/CNAME
 
 air:
+	go get github.com/air-verse/air
 	AUTEUR_WEBROOT="/" go run github.com/air-verse/air
 
 serve:

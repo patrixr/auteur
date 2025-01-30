@@ -24,6 +24,7 @@ Auteur is basically a minimalistic wiki with:
 - Multiple inputs
   - Markdown files
   - Code comments
+- Mermaid support
 
 ## Getting Started
 

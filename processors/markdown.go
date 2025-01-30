@@ -1,12 +1,12 @@
-package core
+package processors
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
 	. "github.com/patrixr/auteur/common"
+	. "github.com/patrixr/auteur/core"
 	"github.com/patrixr/q"
 )
 
@@ -38,7 +38,7 @@ func (r *MarkdownProcessor) Load(site *Auteur, file string) ([]Content, error) {
 	}
 
 	title := strings.Split(filepath.Base(file), ".")[0]
-	relPath, err := r.getRelativePath(site, file)
+	relPath, err := site.GetRelativePath(file)
 	if err != nil {
 		return []Content{}, err
 	}
@@ -88,24 +88,4 @@ func (r *MarkdownProcessor) Load(site *Auteur, file string) ([]Content, error) {
 			order:    fm.Order,
 		},
 	}, nil
-}
-
-func (r *MarkdownProcessor) getRelativePath(site *Auteur, path string) (string, error) {
-	cwd, err := filepath.Abs(site.Rootdir)
-
-	if err != nil {
-		return "", fmt.Errorf("failed to get an absolute path for working directory: %w", err)
-	}
-
-	relPath, err := filepath.Rel(cwd, path)
-
-	if err != nil {
-		return "", fmt.Errorf("failed to get relative path: %w", err)
-	}
-
-	if relPath == "." {
-		return "", nil
-	}
-
-	return relPath, nil
 }

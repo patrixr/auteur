@@ -19,6 +19,8 @@ type Auteur struct {
 	processors []Processor
 }
 
+// NewAuteur creates a new site
+// Configuration is detected automatically
 func NewAuteur() (*Auteur, error) {
 	config, err := DetectConfig()
 
@@ -33,14 +35,6 @@ func NewAuteur() (*Auteur, error) {
 		Content:      []Content{},
 		processors:   []Processor{},
 	}, nil
-}
-
-func (site *Auteur) SetTitle(title string) {
-	site.Title = title
-}
-
-func (site *Auteur) SetDesc(desc string) {
-	site.Desc = desc
 }
 
 func (site *Auteur) Slug() string {
@@ -274,4 +268,24 @@ func IsExcluded(filename string, patterns []string) bool {
 		}
 	}
 	return false
+}
+
+func (site *Auteur) GetRelativePath(path string) (string, error) {
+	cwd, err := filepath.Abs(site.Rootdir)
+
+	if err != nil {
+		return "", fmt.Errorf("failed to get an absolute path for working directory: %w", err)
+	}
+
+	relPath, err := filepath.Rel(cwd, path)
+
+	if err != nil {
+		return "", fmt.Errorf("failed to get relative path: %w", err)
+	}
+
+	if relPath == "." {
+		return "", nil
+	}
+
+	return relPath, nil
 }

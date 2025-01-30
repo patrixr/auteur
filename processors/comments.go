@@ -1,4 +1,4 @@
-package core
+package processors
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	. "github.com/patrixr/auteur/common"
+	. "github.com/patrixr/auteur/core"
 	"github.com/patrixr/q"
 )
 
@@ -169,7 +170,7 @@ func (r *CommentProcessor) Supports(extension string) bool {
 	return ok
 }
 
-func (r *CommentProcessor) Load(_ *Auteur, file string) ([]Content, error) {
+func (r *CommentProcessor) Load(auteur *Auteur, file string) ([]Content, error) {
 	Logf("Reading %s", file)
 
 	content, err := os.ReadFile(file)
@@ -177,24 +178,19 @@ func (r *CommentProcessor) Load(_ *Auteur, file string) ([]Content, error) {
 		return []Content{}, err
 	}
 
-	return r.LoadFromString(string(content), getCommentStyle(file))
-}
+	style := getCommentStyle(file)
 
-func (r *CommentProcessor) LoadFromString(content string, style CommentStyle) ([]Content, error) {
 	out := []Content{}
-	comments := findCommentsInText(content, style)
+
+	comments := findCommentsInText(string(content), style)
+
+	relPath, err := auteur.GetRelativePath(file)
 
 	for _, comment := range comments {
 		include, args, trimmed := extractAuteurMetaFromComment(comment)
 
 		if !include {
 			continue
-		}
-
-		path := []string{}
-
-		if len(args) > 0 {
-			path = strings.Split(args[0], "/")
 		}
 
 		meta, html, err := MarkdownToHTMLWithMeta([]byte(trimmed))
@@ -211,7 +207,12 @@ func (r *CommentProcessor) LoadFromString(content string, style CommentStyle) ([
 			continue
 		}
 
-		if fm.Path != "" && len(path) == 0 {
+		// Default to the path of the file the content is contained in
+		path := strings.Split(relPath, "/")
+		// If a path is provided as arg or in the frontmatter, use that instead
+		if len(args) > 0 {
+			path = strings.Split(args[0], "/")
+		} else if fm.Path != "" {
 			path = strings.Split(fm.Path, "/")
 		}
 
