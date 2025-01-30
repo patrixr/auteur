@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/webawesome.css" />
     <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/themes/premium.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/kimbie-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <link rel="stylesheet" href="/style.css" />
     <script type="module" src="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/webawesome.loader.js"></script>
@@ -31,24 +32,10 @@
             hx-indicator="#loading-indicator"
           >
             Auteur
-            <span class="version">0.0.19</span>
+            <span class="version">0.0.20</span>
           </a>
           
           <wa-tree>
-            
-              
-            <wa-tree-item>
-              
-                <a
-                  href="/installation"
-                  hx-get="/installation.frag"
-                  hx-target="#article-content"
-                  hx-push-url="/installation"
-                  hx-indicator="#loading-indicator"
-                >installation</a>
-              
-            </wa-tree-item>
-          
             
               
             <wa-tree-item>
@@ -74,6 +61,20 @@
                   hx-push-url="/installation"
                   hx-indicator="#loading-indicator"
                 >installation</a>
+              
+            </wa-tree-item>
+          
+            
+              
+            <wa-tree-item>
+              
+                <a
+                  href="/configuration"
+                  hx-get="/configuration.frag"
+                  hx-target="#article-content"
+                  hx-push-url="/configuration"
+                  hx-indicator="#loading-indicator"
+                >configuration</a>
               
             </wa-tree-item>
           
@@ -142,6 +143,7 @@ Its main use case is building out documentation from a codebase.</p>
 <li>Code comments</li>
 </ul>
 </li>
+<li>Mermaid support</li>
 </ul>
 <h2>Getting Started</h2>
 <p>Running Auteur can be done via the go command line tool, it is as simple as running:</p>

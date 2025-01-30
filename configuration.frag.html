@@ -1,0 +1,81 @@
+<h1>Auteur Configuration</h1>
+<p>Auteur is designed to be flexible and configurable. You can customize the behavior of the tool by providing a configuration file in YAML or JSON format.</p>
+<p>The following file names are recognized:</p>
+<ul>
+<li><code>auteur.yaml</code></li>
+<li><code>auteur.yml</code></li>
+<li><code>auteur.json</code></li>
+</ul>
+<h2>Configuration File</h2>
+<p>The configuration is specified in YAML format, typically named <code>config.yaml</code> or similar.</p>
+<h2>Basic Settings</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Project name displayed in documentation</td>
+<td>Auteur</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Version number of the project</td>
+<td>0.0.1</td>
+</tr>
+<tr>
+<td><code>outfolder</code></td>
+<td>string</td>
+<td>Output directory for generated files</td>
+<td>./dist</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td>string</td>
+<td>Root directory containing source documentation</td>
+<td>.</td>
+</tr>
+<tr>
+<td><code>webroot</code></td>
+<td>string</td>
+<td>Base URL path for web serving</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+<h2>Exclusion Rules</h2>
+<p>The <code>exclude</code> section defines patterns and directories to ignore during processing:</p>
+<pre><code class="language-yml">exclude:
+  - .git
+  - tmp
+  - dist
+  - node_modules
+  - &quot;*_test.go&quot;
+</code></pre>
+<p>Files and directories matching these patterns will be skipped during document generation. The exclusion supports:</p>
+<ul>
+<li>Directory names</li>
+<li>File patterns using glob syntax</li>
+<li>Hidden files and directories</li>
+</ul>
+<h2>Example Configuration</h2>
+<pre><code class="language-yml">title: &quot;Auteur&quot;
+version: 0.0.6
+outfolder: ./dist
+root: &quot;./docs&quot;
+webroot: &quot;/auteur&quot;
+exclude:
+  - .git
+  - tmp
+  - dist
+  - node_modules
+  - &quot;*_test.go&quot;
+</code></pre>
