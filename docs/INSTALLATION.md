@@ -39,3 +39,9 @@ Alternatively you can also use `go run` to run Auteur directly from the reposito
 ```bash
 go run github.com/patrixr/auteur
 ```
+
+## Using binaries
+
+Binaries are available for download on the [releases page](https://github.com/patrixr/auteur/releases).
+
+Download and extract the binary for your platform, and run it from the command line.
