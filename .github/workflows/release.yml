@@ -38,6 +38,9 @@ jobs:
             goos: windows
     steps:
       - uses: actions/checkout@v4
+      - name: Get ldflags
+        id: ldflags
+        run: echo "LDFLAGS=$(make ldflags)" >> "$GITHUB_OUTPUT"
       - uses: wangyoucao577/go-release-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,5 +48,6 @@ jobs:
           goarch: ${{ matrix.goarch }}
           goversion: "https://dl.google.com/go/go1.23.1.linux-amd64.tar.gz"
           project_path: "./"
+          ldflags: ${{ steps.ldflags.outputs.LDFLAGS }}
           binary_name: "auteur"
           extra_files: LICENSE README.md
