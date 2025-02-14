@@ -1,8 +1,10 @@
 .PHONY: all release test templ clean tailwind build example tidy run tag
 
 BIN_NAME := auteur
+MODULE_NAME := github.com/patrixr/auteur
 BUILD_FOLDER := ./out
 VERSION_CMD := grep "version:" auteur.yaml | cut -d: -f2 | tr -d ' '
+VERSION := $(shell ${VERSION_CMD})
 
 tag: test
 	git tag -a "v`${VERSION_CMD}`" -m "Release version `${VERSION_CMD}`"
@@ -27,7 +29,7 @@ tidy:
 	go mod tidy
 
 build:
-	go build -o ${BUILD_FOLDER}/${BIN_NAME} ./
+	go build -ldflags="-X '${MODULE_NAME}/cmd.Version=${VERSION}'" -o ${BUILD_FOLDER}/${BIN_NAME} ./
 
 run:
 	go run main.go
@@ -42,5 +44,5 @@ air:
 serve:
 	npx serve ./dist
 
-version:
-	@echo `${VERSION_CMD}`
+version: build
+	${BUILD_FOLDER}/${BIN_NAME} version
