@@ -89,3 +89,19 @@ func main() {
 	fmt.Println("Hello, World!")
 }
 ```
+
+## Release process
+
+Currently auteur is available via:
+
+- `go get` and `go run` commands
+- Homebrew
+
+To make a release, you can use the `make tag release` command. This command automates the process of tagging a new release version in your repository and pushing it to github.
+
+Requirements:
+
+- `git`
+- `gh` github command line tool
+
+Before running the command, ensure that you have the necessary permissions to push tags to the remote repository.
