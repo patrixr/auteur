@@ -218,9 +218,6 @@ func (r *CommentProcessor) Load(auteur *Auteur, file string) ([]Content, error) 
 			path = strings.Split(fm.Path, "/")
 		}
 
-		fmt.Println("folderPath", folderPath)
-		fmt.Println("path", path)
-		fmt.Println("args", args)
 		out = append(out, &ContentData{
 			metadata: meta,
 			data:     html,
@@ -265,7 +262,6 @@ func extractAuteurMetaFromComment(text string) (present bool, args []string, tri
 	trimmed = strings.Trim(q.TrimIndent(auteurRexp.ReplaceAllString(text, "")), "\n")
 
 	// Check to see if we've found some arguments
-	fmt.Println("matches", auteurMatches)
 	if len(auteurMatches[0]) > 2 {
 		args = q.Filter(auteurMatches[0][2:], func(arg string) bool {
 			return arg != ""
