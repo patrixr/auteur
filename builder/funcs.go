@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/patrixr/q"
 )
@@ -30,5 +31,8 @@ var templateFuncs = template.FuncMap{
 		q.AssertNoError(err)
 
 		return filepath.Join(webroot, filepath.Base(url))
+	},
+	"CleanTitle": func(txt string) string {
+		return regexp.MustCompile("[-_]+").ReplaceAllString(txt, " ")
 	},
 }

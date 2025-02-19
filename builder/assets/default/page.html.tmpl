@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/webawesome.css" />
-    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/themes/premium.css" />
+    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.9/dist/styles/themes/{{ .Site.Theme }}.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/kimbie-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -31,7 +31,7 @@
             hx-push-url="{{ Join .Webroot "/" }}"
             hx-indicator="#loading-indicator"
           >
-            {{.Site.Root.Title}}
+            {{CleanTitle .Site.Root.Title}}
             <span class="version">{{.Site.Root.Version}}</span>
           </a>
           {{ define "tree-item" }}
@@ -44,9 +44,9 @@
                     hx-target="#article-content"
                     hx-push-url="{{ Join .Webroot .Href "index" }}"
                     hx-indicator="#loading-indicator"
-                  >{{.Title}}</a>
+                  >{{CleanTitle .Title}}</a>
                 {{else}}
-                  {{.Title}}
+                  {{CleanTitle .Title }}
                 {{end}}
                 {{range .Children}}
                   {{ template "tree-item" . }}
@@ -58,7 +58,7 @@
                   hx-target="#article-content"
                   hx-push-url="{{ Join .Webroot .Href }}"
                   hx-indicator="#loading-indicator"
-                >{{.Title}}</a>
+                >{{CleanTitle .Title}}</a>
               {{end}}
             </wa-tree-item>
           {{ end }}

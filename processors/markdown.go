@@ -38,6 +38,8 @@ func (r *MarkdownProcessor) Load(site *Auteur, file string) ([]Content, error) {
 	}
 
 	title := strings.Split(filepath.Base(file), ".")[0]
+	title = strings.ReplaceAll(title, "_", " ")
+	title = strings.ReplaceAll(title, "-", " ")
 	relPath, err := site.GetRelativePath(file)
 	if err != nil {
 		return []Content{}, err

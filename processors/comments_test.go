@@ -11,6 +11,60 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestExtractAuteurMetadata(t *testing.T) {
+	t.Run("test detect auteur tag with multiple args", func(t *testing.T) {
+		text := q.TrimIndent(`
+			@auteur("arg1", "arg2")
+
+			# Hello
+		`)
+
+		include, args, trimmed := extractAuteurMetaFromComment(text)
+		assert.True(t, include)
+		assert.Equal(t, []string{"arg1", "arg2"}, args)
+		assert.Equal(t, "# Hello", trimmed)
+	})
+
+	t.Run("test detect auteur tag with single arg", func(t *testing.T) {
+		text := q.TrimIndent(`
+			@auteur("arg1")
+
+			# Hello
+		`)
+
+		include, args, trimmed := extractAuteurMetaFromComment(text)
+		assert.True(t, include)
+		assert.Equal(t, []string{"arg1"}, args)
+		assert.Equal(t, "# Hello", trimmed)
+	})
+
+	t.Run("test detect auteur tag with no args", func(t *testing.T) {
+		text := q.TrimIndent(`
+			@auteur()
+
+			# Hello
+		`)
+
+		include, args, trimmed := extractAuteurMetaFromComment(text)
+		assert.True(t, include)
+		assert.Equal(t, []string{}, args)
+		assert.Equal(t, "# Hello", trimmed)
+	})
+
+	t.Run("test detect auteur tag with no args and no parenthesis", func(t *testing.T) {
+		text := q.TrimIndent(`
+			@auteur
+
+			# Hello
+		`)
+
+		include, args, trimmed := extractAuteurMetaFromComment(text)
+		assert.True(t, include)
+		assert.Equal(t, []string{}, args)
+		assert.Equal(t, "# Hello", trimmed)
+	})
+}
+
 func TestFindCommentsInText(t *testing.T) {
 	tests := []struct {
 		name     string

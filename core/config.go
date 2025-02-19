@@ -25,6 +25,7 @@ type AuteurConfig struct {
 	Webroot   string   `yaml:"webroot"`
 	Links     []Link   `yaml:"links"`
 	Order     int      `yaml:"order"`
+	Theme     string   `yaml:"theme"`
 }
 
 // ExtendConfig returns a new AuteurConfig with the values of the other config
@@ -40,6 +41,10 @@ func (ac AuteurConfig) ExtendConfig(other *AuteurConfig) AuteurConfig {
 
 	if other.Title != "" {
 		ac.Title = other.Title
+	}
+
+	if other.Theme != "" {
+		ac.Theme = other.Theme
 	}
 
 	if other.Desc != "" {
@@ -80,6 +85,7 @@ func DetectConfig() (AuteurConfig, error) {
 		Outfolder: "out",
 		Webroot:   "/",
 		Version:   "0.0.1",
+		Theme:     "default",
 		Exclude: []string{
 			"node_modules",
 			".git",

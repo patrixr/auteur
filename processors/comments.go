@@ -3,6 +3,7 @@ package processors
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -185,6 +186,9 @@ func (r *CommentProcessor) Load(auteur *Auteur, file string) ([]Content, error) 
 	comments := findCommentsInText(string(content), style)
 
 	relPath, err := auteur.GetRelativePath(file)
+	folderPath := filepath.Dir(relPath)
+	// Default to the path of the file the content is contained in
+	path := strings.Split(folderPath, "/")
 
 	for _, comment := range comments {
 		include, args, trimmed := extractAuteurMetaFromComment(comment)
@@ -207,8 +211,6 @@ func (r *CommentProcessor) Load(auteur *Auteur, file string) ([]Content, error) 
 			continue
 		}
 
-		// Default to the path of the file the content is contained in
-		path := strings.Split(relPath, "/")
 		// If a path is provided as arg or in the frontmatter, use that instead
 		if len(args) > 0 {
 			path = strings.Split(args[0], "/")
@@ -216,14 +218,9 @@ func (r *CommentProcessor) Load(auteur *Auteur, file string) ([]Content, error) 
 			path = strings.Split(fm.Path, "/")
 		}
 
-		fmt.Println(&ContentData{
-			metadata: meta,
-			data:     html,
-			path:     path,
-			kind:     HTML,
-			title:    fm.Title,
-			order:    fm.Order,
-		})
+		fmt.Println("folderPath", folderPath)
+		fmt.Println("path", path)
+		fmt.Println("args", args)
 		out = append(out, &ContentData{
 			metadata: meta,
 			data:     html,
@@ -265,11 +262,14 @@ func extractAuteurMetaFromComment(text string) (present bool, args []string, tri
 	}
 
 	present = true
-	trimmed = q.TrimIndent(auteurRexp.ReplaceAllString(text, ""))
+	trimmed = strings.Trim(q.TrimIndent(auteurRexp.ReplaceAllString(text, "")), "\n")
 
 	// Check to see if we've found some arguments
+	fmt.Println("matches", auteurMatches)
 	if len(auteurMatches[0]) > 2 {
-		args = auteurMatches[0][2:]
+		args = q.Filter(auteurMatches[0][2:], func(arg string) bool {
+			return arg != ""
+		})
 
 		for i, arg := range args {
 			args[i] = strings.Trim(arg, `"`)
