@@ -1,5 +1,5 @@
 ---
-order: 3
+priority: 80
 ---
 
 # Supported Languages

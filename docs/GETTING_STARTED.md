@@ -1,5 +1,5 @@
 ---
-order: 0
+priority: 100
 ---
 
 # Getting Started

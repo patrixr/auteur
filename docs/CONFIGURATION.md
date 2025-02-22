@@ -1,5 +1,5 @@
 ---
-order: 2
+priority: 95
 ---
 
 # Auteur Configuration

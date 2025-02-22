@@ -1,5 +1,5 @@
 ---
-order: 1
+priority: 99
 ---
 
 # Installation
