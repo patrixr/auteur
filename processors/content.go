@@ -5,7 +5,7 @@ import (
 	. "github.com/patrixr/auteur/core"
 )
 
-// A generic implementation of the Content interface that
+// ContentData A generic implementation of the Content interface that
 // can be used by processors to returns chunks of file content.
 type ContentData struct {
 	kind     ContentType
@@ -13,15 +13,15 @@ type ContentData struct {
 	path     []string
 	metadata Metadata
 	title    string
-	order    int
+	priority int
 }
 
 func (c *ContentData) Type() ContentType {
 	return c.kind
 }
 
-func (c *ContentData) Order() int {
-	return c.order
+func (c *ContentData) Priority() int {
+	return c.priority
 }
 
 func (c *ContentData) Data() string {

@@ -24,7 +24,7 @@ type AuteurConfig struct {
 	Rootdir   string   `yaml:"root"`
 	Webroot   string   `yaml:"webroot"`
 	Links     []Link   `yaml:"links"`
-	Order     int      `yaml:"order"`
+	Priority  int      `yaml:"priority"`
 	Theme     string   `yaml:"theme"`
 }
 
@@ -67,8 +67,8 @@ func (ac AuteurConfig) ExtendConfig(other *AuteurConfig) AuteurConfig {
 		ac.Webroot = other.Webroot
 	}
 
-	if other.Order != ac.Order {
-		ac.Order = other.Order
+	if other.Priority != ac.Priority {
+		ac.Priority = other.Priority
 	}
 
 	return ac

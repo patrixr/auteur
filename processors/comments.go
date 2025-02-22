@@ -224,7 +224,7 @@ func (r *CommentProcessor) Load(auteur *Auteur, file string) ([]Content, error) 
 			path:     path,
 			kind:     HTML,
 			title:    fm.Title,
-			order:    fm.Order,
+			priority: fm.Priority,
 		})
 	}
 

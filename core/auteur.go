@@ -78,13 +78,13 @@ func (site *Auteur) Children() []*Auteur {
 	return site.children
 }
 
-// Registers a processor to be used when ingesting files
+// RegisterProcessor Registers a processor to be used when ingesting files
 // Each processor is responsible for transforming specific file types
 func (site *Auteur) RegisterProcessor(processor Processor) {
 	site.processors = append(site.processors, processor)
 }
 
-// Given a folder, this function ingests all files and directories within it
+// Ingest Given a folder, this function ingests all files and directories within it
 // using the registered processors to transform files into site content
 func (site *Auteur) Ingest(infolder string) error {
 	files, err := os.ReadDir(infolder)
@@ -134,7 +134,7 @@ func (site *Auteur) Ingest(infolder string) error {
 	return nil
 }
 
-// Adds HTML/Markdown content to the site
+// AddContent Adds HTML/Markdown content to the site
 func (site *Auteur) AddContent(content Content) {
 	if content == nil || content.Len() == 0 {
 		return
@@ -146,24 +146,28 @@ func (site *Auteur) AddContent(content Content) {
 		if len(strings.Trim(part, " \t\n")) == 0 {
 			continue
 		}
-		ref = ref.GetSubpage(part, content.Order())
+		ref = ref.GetSubpage(part, content.Priority())
 	}
 
 	ordered := make([]Content, len(ref.Content)+1)
 
+	j := 0
+	placed := false
 	for i := 0; i < len(ordered); i++ {
-		if i == len(ordered)-1 {
+		if !placed && i == len(ordered)-1 {
 			ordered[i] = content
 			break
 		}
 
-		existing := ref.Content[i]
+		existing := ref.Content[j]
+		j += 1
 
-		if existing.Order() <= content.Order() {
+		if placed || existing.Priority() > content.Priority() {
 			ordered[i] = existing
 			continue
 		}
 
+		placed = true
 		ordered[i] = content
 		ordered[i+1] = existing
 		i += 1
@@ -191,8 +195,8 @@ func (site *Auteur) GetSubpage(title string, order int) *Auteur {
 
 	newPage := &Auteur{
 		AuteurConfig: site.ExtendConfig(&AuteurConfig{
-			Title: title,
-			Order: order,
+			Title:    title,
+			Priority: order,
 		}),
 		root:   root,
 		parent: site,
@@ -200,19 +204,23 @@ func (site *Auteur) GetSubpage(title string, order int) *Auteur {
 
 	newChildren := make([]*Auteur, len(site.children)+1)
 
+	j := 0
+	placed := false
 	for i := 0; i < len(newChildren); i++ {
-		if i == len(newChildren)-1 {
+		if !placed && i == len(newChildren)-1 {
 			newChildren[i] = newPage
 			break
 		}
 
-		existing := site.children[i]
+		existing := site.children[j]
+		j += 1
 
-		if existing.Order <= newPage.Order {
+		if placed || existing.Priority > newPage.Priority {
 			newChildren[i] = existing
 			continue
 		}
 
+		placed = true
 		newChildren[i] = newPage
 		newChildren[i+1] = existing
 		i += 1

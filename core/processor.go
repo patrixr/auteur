@@ -22,6 +22,6 @@ type Content interface {
 	Path() []string
 	Title() string
 	Meta() Metadata
-	Order() int
+	Priority() int
 	Len() int
 }

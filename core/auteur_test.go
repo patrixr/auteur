@@ -18,7 +18,7 @@ func (m MockContent) Data() string      { return "" }
 func (m MockContent) Meta() Metadata    { return Metadata{} }
 func (m MockContent) Title() string     { return "" }
 func (m MockContent) Type() ContentType { return Markdown }
-func (m MockContent) Order() int        { return 0 }
+func (m MockContent) Priority() int     { return 0 }
 
 type MockProcessor struct {
 	supportedExt string

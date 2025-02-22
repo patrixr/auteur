@@ -11,10 +11,10 @@ import (
 )
 
 type AuteurFrontmatter struct {
-	Path   string `yaml:"path"`
-	Title  string `yaml:"title"`
-	Order  int    `yaml:"order"`
-	Ignore bool   `yaml:"ignore"`
+	Path     string `yaml:"path"`
+	Title    string `yaml:"title"`
+	Priority int    `yaml:"priority"`
+	Ignore   bool   `yaml:"ignore"`
 }
 
 type MarkdownProcessor struct {
@@ -87,7 +87,7 @@ func (r *MarkdownProcessor) Load(site *Auteur, file string) ([]Content, error) {
 			kind:     HTML,
 			title:    title,
 			path:     path,
-			order:    fm.Order,
+			priority: fm.Priority,
 		},
 	}, nil
 }
